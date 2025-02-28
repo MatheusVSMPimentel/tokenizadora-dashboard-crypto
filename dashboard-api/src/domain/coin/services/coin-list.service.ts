@@ -1,17 +1,18 @@
 // src/crypto/coin-list.service.ts
-import { Injectable, Logger } from '@nestjs/common';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CoinDto, CoinListResponseDto } from 'src/domain/external-data/dto/coin-list-response.dto';
-import { CoinApiService } from 'src/integration/external-data/coin.api.service';
 import { Repository } from 'typeorm';
 import { Coin } from '../entities/coin.entity';
+import { ICoinApi } from 'src/domain/external-data/coin.api.inteface';
 
 @Injectable()
 export class CoinListService {
   private readonly logger = new Logger(CoinListService.name);
 
   constructor(
-    private readonly cryptoApiService: CoinApiService,
+    @Inject('ICoinApi')
+    private readonly cryptoApiService: ICoinApi,
     @InjectRepository(Coin)
     private readonly coinRepository: Repository<Coin>,
   ) {}

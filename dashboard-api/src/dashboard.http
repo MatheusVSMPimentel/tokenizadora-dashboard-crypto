@@ -1,2 +1,5 @@
-###list coin by id
+###list coin by symbol local
 GET http://localhost:3000/coins/?filter=
+
+###list coin by symbol docker
+GET http://localhost:3002/coins/?filter=
