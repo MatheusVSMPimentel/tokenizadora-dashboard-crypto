@@ -1,6 +1,6 @@
 import { CoinListResponseDto } from "./dto/coin-list-response.dto";
 
-export interface ICryptoData {
+export interface ICoinApi {
     /**
      * Obtém o valor atual da criptomoeda em USD.
      *
