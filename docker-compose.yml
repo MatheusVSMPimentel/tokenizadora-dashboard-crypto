@@ -1,6 +1,18 @@
 version: '3.1'
 
 services:
+
+  user:
+    build:
+      context: ./dashboard-user-api
+      dockerfile: Dockerfile
+    env_file:
+      - ./env/.env
+    ports:
+      - '3001:3000'
+    depends_on:
+      - mysql
+  
   mysql:
     image: mysql
     container_name: mysql
