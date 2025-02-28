@@ -1,31 +1,35 @@
 import { HttpModule } from '@nestjs/axios';
 import { Module } from '@nestjs/common';
 import { ScheduleModule } from '@nestjs/schedule';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { CoinApiService } from './integration/external-data/coin.api.service';
+import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { CoinModule } from './domain/coin/coin.module';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { CoinApiService } from './infrastructure/external-data/coin.api.service';
 
 @Module({
   imports: [
     HttpModule,
     ScheduleModule.forRoot(),
-    TypeOrmModule.forRoot({
-      type: 'mssql',
-      host: 'localhost',                  // ou o endereço IP do seu servidor SQL Server
-      port: 14444,                         // porta padrão do SQL Server
-      username: 'sa',                     // exemplo de usuário
-      password: 'YourStrong@Passw0rd',     // exemplo de senha
-      // Carrega todas as entidades automaticamente a partir do diretório
-      entities: [__dirname + '/**/*.entity{.ts,.js}'],
-      synchronize: true,                  // use apenas em desenvolvimento!
-      options: {
-        encrypt: false,                   // defina como true se sua conexão exigir
-        enableArithAbort: true,
-      },
+    TypeOrmModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService): TypeOrmModuleOptions => ({
+        type: 'mssql',
+        host: configService.get<string>('DB_HOST'),
+        port: parseInt(configService.get<string>('DB_PORT') ?? "", 10),
+        username: configService.get<string>('DB_USERNAME'),
+        password: configService.get<string>('DB_PASSWORD'),
+        entities: [__dirname + '/**/*.entity.js' ], // '/../**/*.entity{.ts,.js}'
+        synchronize: true,  // just for experimental purpose
+        options: {
+          encrypt: false,                   // defina como true se sua conexão exigir
+          enableArithAbort: true,
+        }, 
+      }),
     }),
-    CoinModule
+    CoinModule, ConfigModule
   ],
-  providers: [CoinApiService],
+  providers: [CoinApiService, ConfigService],
   controllers: [],
   exports: [CoinApiService],
 })
