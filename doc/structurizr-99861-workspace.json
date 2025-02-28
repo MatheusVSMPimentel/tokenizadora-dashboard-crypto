@@ -1,0 +1,868 @@
+{
+    "configuration": {
+        "scope": "SoftwareSystem"
+    },
+    "description": "Um Dashboard onde os usuários podem ver criptos e acompanhar suas preferidas.",
+    "documentation": {},
+    "id": 99861,
+    "lastModifiedAgent": "structurizr-cloud/dsl-editor/ef539a90-fde6-43a9-b62a-f802e00176dc",
+    "lastModifiedDate": "2025-02-28T07:58:37Z",
+    "lastModifiedUser": "matmaus9623@gmail.com",
+    "model": {
+        "people": [
+            {
+                "id": "1",
+                "location": "Unspecified",
+                "name": "Usuario Dashboard",
+                "properties": {
+                    "structurizr.dsl.identifier": "u"
+                },
+                "relationships": [
+                    {
+                        "description": "Usa o dashboard para filtrar as criptomoedas",
+                        "destinationId": "3",
+                        "id": "19",
+                        "sourceId": "1",
+                        "tags": "Relationship"
+                    },
+                    {
+                        "description": "Usa o dashboard para filtrar as criptomoedas",
+                        "destinationId": "2",
+                        "id": "20",
+                        "linkedRelationshipId": "19",
+                        "sourceId": "1"
+                    }
+                ],
+                "tags": "Element,Person"
+            }
+        ],
+        "softwareSystems": [
+            {
+                "containers": [
+                    {
+                        "description": "Aplicação Single Page que permite usuário fazer login e visualizar cripto moedas em um dashboard",
+                        "documentation": {},
+                        "id": "3",
+                        "name": "Single Page Application",
+                        "properties": {
+                            "structurizr.dsl.identifier": "dash-system.spa"
+                        },
+                        "relationships": [
+                            {
+                                "description": "Solicita dados de criptomoedas (lista e valores)",
+                                "destinationId": "8",
+                                "id": "22",
+                                "sourceId": "3",
+                                "tags": "Relationship",
+                                "technology": "REST API"
+                            },
+                            {
+                                "description": "Solicita login/cadastro de usuário",
+                                "destinationId": "4",
+                                "id": "23",
+                                "sourceId": "3",
+                                "tags": "Relationship",
+                                "technology": "APIGATEWAY"
+                            },
+                            {
+                                "description": "Lista as criptomoedas disponíveis",
+                                "destinationId": "9",
+                                "id": "24",
+                                "sourceId": "3",
+                                "tags": "Relationship"
+                            },
+                            {
+                                "description": "Retorna o valor da criptomoeda pesquisada",
+                                "destinationId": "10",
+                                "id": "25",
+                                "sourceId": "3",
+                                "tags": "Relationship"
+                            },
+                            {
+                                "description": "Solicita atualizações em tempo real para o frontend",
+                                "destinationId": "12",
+                                "id": "35",
+                                "sourceId": "3",
+                                "tags": "Relationship",
+                                "technology": "WebSocket"
+                            }
+                        ],
+                        "tags": "Element,Container,Frontend",
+                        "technology": "VueJs"
+                    },
+                    {
+                        "description": "Aplicação para evitar que o usuario se conecte diretamente com a aplicação de login enquanto realizar load balance",
+                        "documentation": {},
+                        "id": "4",
+                        "name": "Usuario API Gateway",
+                        "properties": {
+                            "structurizr.dsl.identifier": "dash-system.api-gateway"
+                        },
+                        "relationships": [
+                            {
+                                "description": "Fazer login",
+                                "destinationId": "6",
+                                "id": "45",
+                                "sourceId": "4",
+                                "tags": "Relationship"
+                            },
+                            {
+                                "description": "Fazer login",
+                                "destinationId": "5",
+                                "id": "46",
+                                "linkedRelationshipId": "45",
+                                "sourceId": "4"
+                            },
+                            {
+                                "description": "Criar usuario",
+                                "destinationId": "7",
+                                "id": "47",
+                                "sourceId": "4",
+                                "tags": "Relationship"
+                            }
+                        ],
+                        "tags": "Element,Container",
+                        "technology": "APISIX"
+                    },
+                    {
+                        "components": [
+                            {
+                                "description": "Fazer login no sistema",
+                                "documentation": {},
+                                "id": "6",
+                                "name": "ENDPOINT POST Login",
+                                "properties": {
+                                    "structurizr.dsl.identifier": "dash-system.user-rest.post-login-user"
+                                },
+                                "relationships": [
+                                    {
+                                        "description": "Realiza login usando plataformas de 3º",
+                                        "destinationId": "17",
+                                        "id": "39",
+                                        "sourceId": "6",
+                                        "tags": "Relationship"
+                                    },
+                                    {
+                                        "description": "Pesquisa de dados",
+                                        "destinationId": "15",
+                                        "id": "42",
+                                        "sourceId": "6",
+                                        "tags": "Relationship"
+                                    }
+                                ],
+                                "tags": "Element,Component"
+                            },
+                            {
+                                "description": "Criar login de usuario",
+                                "documentation": {},
+                                "id": "7",
+                                "name": "ENDPOINT POST Create User",
+                                "properties": {
+                                    "structurizr.dsl.identifier": "dash-system.user-rest.post-register-user-login"
+                                },
+                                "relationships": [
+                                    {
+                                        "description": "Realiza operações CRUD nos dados de usuários",
+                                        "destinationId": "15",
+                                        "id": "44",
+                                        "sourceId": "7",
+                                        "tags": "Relationship"
+                                    }
+                                ],
+                                "tags": "Element,Component"
+                            }
+                        ],
+                        "description": "Aplicação que realiza cadastro e login de usuários",
+                        "documentation": {},
+                        "id": "5",
+                        "name": "Usuario REST API",
+                        "properties": {
+                            "structurizr.dsl.identifier": "dash-system.user-rest"
+                        },
+                        "relationships": [
+                            {
+                                "description": "Realiza login usando plataformas de 3º",
+                                "destinationId": "17",
+                                "id": "40",
+                                "linkedRelationshipId": "39",
+                                "sourceId": "5"
+                            },
+                            {
+                                "description": "Pesquisa de dados",
+                                "destinationId": "15",
+                                "id": "43",
+                                "linkedRelationshipId": "42",
+                                "sourceId": "5"
+                            }
+                        ],
+                        "tags": "Element,Container,Backend,API",
+                        "technology": "NestJs"
+                    },
+                    {
+                        "components": [
+                            {
+                                "description": "Lista as criptomoedas disponíveis pelo nome",
+                                "documentation": {},
+                                "id": "9",
+                                "name": "ENDPOINT GET Crypto List By Name",
+                                "properties": {
+                                    "structurizr.dsl.identifier": "dash-system.dash-rest.get-crypto-list-by-name"
+                                },
+                                "relationships": [
+                                    {
+                                        "description": "Consulta dados em cache",
+                                        "destinationId": "13",
+                                        "id": "27",
+                                        "sourceId": "9",
+                                        "tags": "Relationship",
+                                        "technology": "Redis"
+                                    },
+                                    {
+                                        "description": "Consulta e atualiza dados persistentes",
+                                        "destinationId": "14",
+                                        "id": "29",
+                                        "sourceId": "9",
+                                        "tags": "Relationship",
+                                        "technology": "SQL"
+                                    }
+                                ],
+                                "tags": "Element,Component"
+                            },
+                            {
+                                "description": "Verifica o valor atual de uma criptomoeda",
+                                "documentation": {},
+                                "id": "10",
+                                "name": "ENDPOINT GET Crypto Value",
+                                "properties": {
+                                    "structurizr.dsl.identifier": "dash-system.dash-rest.get-crypto-value"
+                                },
+                                "relationships": [
+                                    {
+                                        "description": "Salva correlação entre o id do usuário e as criptos",
+                                        "destinationId": "16",
+                                        "id": "36",
+                                        "sourceId": "10",
+                                        "tags": "Relationship",
+                                        "technology": "SQL"
+                                    },
+                                    {
+                                        "description": "Confirma o valor da criptomoeda",
+                                        "destinationId": "18",
+                                        "id": "38",
+                                        "sourceId": "10",
+                                        "tags": "Relationship",
+                                        "technology": "API Externa"
+                                    }
+                                ],
+                                "tags": "Element,Component"
+                            },
+                            {
+                                "description": "Resgata a lista de moedas uma vez por dia e atualiza bancos e cache",
+                                "documentation": {},
+                                "id": "11",
+                                "name": "CRONJOB GET All Cryptos List",
+                                "properties": {
+                                    "structurizr.dsl.identifier": "dash-system.dash-rest.cron-crypto-list-update"
+                                },
+                                "relationships": [
+                                    {
+                                        "description": "Solicita dados atualizados de criptomoedas e atualiza bancos e cache",
+                                        "destinationId": "18",
+                                        "id": "30",
+                                        "sourceId": "11",
+                                        "tags": "Relationship",
+                                        "technology": "API Externa"
+                                    }
+                                ],
+                                "tags": "Element,Component"
+                            },
+                            {
+                                "description": "Transmite atualizações em tempo real para o frontend",
+                                "documentation": {},
+                                "id": "12",
+                                "name": "WEBSOCKET Update Front Values",
+                                "properties": {
+                                    "structurizr.dsl.identifier": "dash-system.dash-rest.websocket-crypto-return"
+                                },
+                                "tags": "Element,Component"
+                            }
+                        ],
+                        "description": "Aplicação que realiza buscas das criptomoedas e seus valores atuais e retorna os dados para a SPA",
+                        "documentation": {},
+                        "id": "8",
+                        "name": "Dashboard REST API",
+                        "properties": {
+                            "structurizr.dsl.identifier": "dash-system.dash-rest"
+                        },
+                        "relationships": [
+                            {
+                                "description": "Realiza operações CRUD no banco do dashboard",
+                                "destinationId": "14",
+                                "id": "26",
+                                "sourceId": "8",
+                                "tags": "Relationship",
+                                "technology": "SQL"
+                            },
+                            {
+                                "description": "Consulta dados em cache",
+                                "destinationId": "13",
+                                "id": "28",
+                                "linkedRelationshipId": "27",
+                                "sourceId": "8",
+                                "technology": "Redis"
+                            },
+                            {
+                                "description": "Solicita dados atualizados de criptomoedas e atualiza bancos e cache",
+                                "destinationId": "18",
+                                "id": "31",
+                                "linkedRelationshipId": "30",
+                                "sourceId": "8",
+                                "technology": "API Externa"
+                            },
+                            {
+                                "description": "Salva correlação entre o id do usuário e as criptos",
+                                "destinationId": "16",
+                                "id": "37",
+                                "linkedRelationshipId": "36",
+                                "sourceId": "8",
+                                "technology": "SQL"
+                            }
+                        ],
+                        "tags": "Element,Container,Backend,API",
+                        "technology": "NestJs"
+                    },
+                    {
+                        "description": "Armazena dados temporários para acesso rápido",
+                        "documentation": {},
+                        "id": "13",
+                        "name": "Cache Dashboard Database",
+                        "properties": {
+                            "structurizr.dsl.identifier": "dash-system.redis-db"
+                        },
+                        "tags": "Element,Container,Database,Cache",
+                        "technology": "Redis"
+                    },
+                    {
+                        "description": "Armazena os dados persistentes do dashboard",
+                        "documentation": {},
+                        "id": "14",
+                        "name": "Dashboard Database",
+                        "properties": {
+                            "structurizr.dsl.identifier": "dash-system.sql-db"
+                        },
+                        "tags": "Element,Container,Database",
+                        "technology": "SQL"
+                    },
+                    {
+                        "description": "Armazena os dados dos usuários",
+                        "documentation": {},
+                        "id": "15",
+                        "name": "User Database",
+                        "properties": {
+                            "structurizr.dsl.identifier": "dash-system.oracle-db"
+                        },
+                        "tags": "Element,Container,Database",
+                        "technology": "MySQL"
+                    },
+                    {
+                        "description": "Armazena os dados das criptomoedas monitoradas",
+                        "documentation": {},
+                        "id": "16",
+                        "name": "Crypto NoSQL Database",
+                        "properties": {
+                            "structurizr.dsl.identifier": "dash-system.mongo-db"
+                        },
+                        "tags": "Element,Container,Database,NoSQL",
+                        "technology": "Mongo"
+                    }
+                ],
+                "description": "Aplicação contendo um Dashboard de cripto para uso dos clientes logados",
+                "documentation": {},
+                "id": "2",
+                "location": "Unspecified",
+                "name": "Cripto Dashboard",
+                "properties": {
+                    "structurizr.dsl.identifier": "dash-system"
+                },
+                "relationships": [
+                    {
+                        "description": "Obtém dados para alimentar o sistema",
+                        "destinationId": "18",
+                        "id": "21",
+                        "sourceId": "2",
+                        "tags": "Relationship"
+                    },
+                    {
+                        "description": "Realiza login usando plataformas de 3º",
+                        "destinationId": "17",
+                        "id": "41",
+                        "linkedRelationshipId": "39",
+                        "sourceId": "2"
+                    }
+                ],
+                "tags": "Element,Software System"
+            },
+            {
+                "description": "Aplicação de 3º para realizar login usando SSO",
+                "documentation": {},
+                "id": "17",
+                "location": "Unspecified",
+                "name": "SSO Partner System",
+                "properties": {
+                    "structurizr.dsl.identifier": "sso-system"
+                },
+                "tags": "Element,Software System"
+            },
+            {
+                "description": "Aplicação de 3º para ler dados de criptomoedas",
+                "documentation": {},
+                "id": "18",
+                "location": "Unspecified",
+                "name": "CryptoCompare",
+                "properties": {
+                    "structurizr.dsl.identifier": "cripto-system"
+                },
+                "relationships": [
+                    {
+                        "description": "Envia dados atualizados de criptomoedas",
+                        "destinationId": "12",
+                        "id": "32",
+                        "sourceId": "18",
+                        "tags": "Relationship",
+                        "technology": "WebSocket"
+                    },
+                    {
+                        "description": "Envia dados atualizados de criptomoedas",
+                        "destinationId": "8",
+                        "id": "33",
+                        "linkedRelationshipId": "32",
+                        "sourceId": "18",
+                        "technology": "WebSocket"
+                    },
+                    {
+                        "description": "Envia dados atualizados de criptomoedas",
+                        "destinationId": "2",
+                        "id": "34",
+                        "linkedRelationshipId": "32",
+                        "sourceId": "18",
+                        "technology": "WebSocket"
+                    }
+                ],
+                "tags": "Element,Software System"
+            }
+        ]
+    },
+    "name": "Tokenizadora-Cripto-Dashboard",
+    "properties": {
+        "structurizr.dsl": "d29ya3NwYWNlICJUb2tlbml6YWRvcmEtQ3JpcHRvLURhc2hib2FyZCIgIlVtIERhc2hib2FyZCBvbmRlIG9zIHVzdcOhcmlvcyBwb2RlbSB2ZXIgY3JpcHRvcyBlIGFjb21wYW5oYXIgc3VhcyBwcmVmZXJpZGFzLiIgew0KDQogICAgIWlkZW50aWZpZXJzIGhpZXJhcmNoaWNhbA0KDQogICAgbW9kZWwgew0KICAgICAgICB1ID0gcGVyc29uICJVc3VhcmlvIERhc2hib2FyZCINCiAgICAgICAgDQogICAgICAgIGRhc2gtc3lzdGVtID0gc29mdHdhcmVTeXN0ZW0gIkNyaXB0byBEYXNoYm9hcmQiICJBcGxpY2HDp8OjbyBjb250ZW5kbyB1bSBEYXNoYm9hcmQgZGUgY3JpcHRvIHBhcmEgdXNvIGRvcyBjbGllbnRlcyBsb2dhZG9zIiB7DQogICAgICAgIA0KICAgICAgICAgICAgc3BhID0gY29udGFpbmVyICJTaW5nbGUgUGFnZSBBcHBsaWNhdGlvbiIgIkFwbGljYcOnw6NvIFNpbmdsZSBQYWdlIHF1ZSBwZXJtaXRlIHVzdcOhcmlvIGZhemVyIGxvZ2luIGUgdmlzdWFsaXphciBjcmlwdG8gbW9lZGFzIGVtIHVtIGRhc2hib2FyZCIgIlZ1ZUpzIiB7DQogICAgICAgICAgICAgICAgdGFncyAiRnJvbnRlbmQiDQogICAgICAgICAgICB9DQogICAgICAgICAgICANCiAgICAgICAgICAgIGFwaS1nYXRld2F5ID0gY29udGFpbmVyICJVc3VhcmlvIEFQSSBHYXRld2F5IiAiQXBsaWNhw6fDo28gcGFyYSBldml0YXIgcXVlIG8gdXN1YXJpbyBzZSBjb25lY3RlIGRpcmV0YW1lbnRlIGNvbSBhIGFwbGljYcOnw6NvIGRlIGxvZ2luIGVucXVhbnRvIHJlYWxpemFyIGxvYWQgYmFsYW5jZSIgIkFQSVNJWCINCiAgICAgICAgICAgIA0KICAgICAgICAgICAgdXNlci1yZXN0ID0gY29udGFpbmVyICJVc3VhcmlvIFJFU1QgQVBJIiAiQXBsaWNhw6fDo28gcXVlIHJlYWxpemEgY2FkYXN0cm8gZSBsb2dpbiBkZSB1c3XDoXJpb3MiICJOZXN0SnMiIHsNCiAgICAgICAgICAgICAgICB0YWdzICJCYWNrZW5kIiwgIkFQSSINCiAgICAgICAgICAgICAgICBwb3N0LWxvZ2luLXVzZXIgPSBjb21wb25lbnQgIkVORFBPSU5UIFBPU1QgTG9naW4iICJGYXplciBsb2dpbiBubyBzaXN0ZW1hIg0KICAgICAgICAgICAgICAgIHBvc3QtcmVnaXN0ZXItdXNlci1sb2dpbiA9IGNvbXBvbmVudCAiRU5EUE9JTlQgUE9TVCBDcmVhdGUgVXNlciIgIkNyaWFyIGxvZ2luIGRlIHVzdWFyaW8iDQogICAgICAgICAgICB9DQogICAgICAgICAgICANCiAgICAgICAgICAgIGRhc2gtcmVzdCA9IGNvbnRhaW5lciAiRGFzaGJvYXJkIFJFU1QgQVBJIiAiQXBsaWNhw6fDo28gcXVlIHJlYWxpemEgYnVzY2FzIGRhcyBjcmlwdG9tb2VkYXMgZSBzZXVzIHZhbG9yZXMgYXR1YWlzIGUgcmV0b3JuYSBvcyBkYWRvcyBwYXJhIGEgU1BBIiAiTmVzdEpzIiB7DQogICAgICAgICAgICAgICAgdGFncyAiQmFja2VuZCIsICJBUEkiDQogICAgICAgICAgICAgICAgDQogICAgICAgICAgICAgICAgZ2V0LWNyeXB0by1saXN0LWJ5LW5hbWUgPSBjb21wb25lbnQgIkVORFBPSU5UIEdFVCBDcnlwdG8gTGlzdCBCeSBOYW1lIiAiTGlzdGEgYXMgY3JpcHRvbW9lZGFzIGRpc3BvbsOtdmVpcyBwZWxvIG5vbWUiDQogICAgICAgICAgICAgICAgZ2V0LWNyeXB0by12YWx1ZSA9IGNvbXBvbmVudCAiRU5EUE9JTlQgR0VUIENyeXB0byBWYWx1ZSIgIlZlcmlmaWNhIG8gdmFsb3IgYXR1YWwgZGUgdW1hIGNyaXB0b21vZWRhIg0KICAgICAgICAgICAgICAgIGNyb24tY3J5cHRvLWxpc3QtdXBkYXRlID0gY29tcG9uZW50ICJDUk9OSk9CIEdFVCBBbGwgQ3J5cHRvcyBMaXN0IiAiUmVzZ2F0YSBhIGxpc3RhIGRlIG1vZWRhcyB1bWEgdmV6IHBvciBkaWEgZSBhdHVhbGl6YSBiYW5jb3MgZSBjYWNoZSINCiAgICAgICAgICAgICAgICB3ZWJzb2NrZXQtY3J5cHRvLXJldHVybiA9IGNvbXBvbmVudCAiV0VCU09DS0VUIFVwZGF0ZSBGcm9udCBWYWx1ZXMiICJUcmFuc21pdGUgYXR1YWxpemHDp8O1ZXMgZW0gdGVtcG8gcmVhbCBwYXJhIG8gZnJvbnRlbmQiDQogICAgICAgICAgICB9DQogICAgICAgICAgICANCiAgICAgICAgICAgIHJlZGlzLWRiID0gY29udGFpbmVyICJDYWNoZSBEYXNoYm9hcmQgRGF0YWJhc2UiICJBcm1hemVuYSBkYWRvcyB0ZW1wb3LDoXJpb3MgcGFyYSBhY2Vzc28gcsOhcGlkbyIgIlJlZGlzIiB7DQogICAgICAgICAgICAgICAgdGFncyAiRGF0YWJhc2UiLCAiQ2FjaGUiDQogICAgICAgICAgICB9DQogICAgICAgICAgICANCiAgICAgICAgICAgIHNxbC1kYiA9IGNvbnRhaW5lciAiRGFzaGJvYXJkIERhdGFiYXNlIiAiQXJtYXplbmEgb3MgZGFkb3MgcGVyc2lzdGVudGVzIGRvIGRhc2hib2FyZCIgIlNRTCIgew0KICAgICAgICAgICAgICAgIHRhZ3MgIkRhdGFiYXNlIg0KICAgICAgICAgICAgfQ0KICAgICAgICAgICAgDQogICAgICAgICAgICBvcmFjbGUtZGIgPSBjb250YWluZXIgIlVzZXIgRGF0YWJhc2UiICJBcm1hemVuYSBvcyBkYWRvcyBkb3MgdXN1w6FyaW9zIiAiTXlTUUwiIHsNCiAgICAgICAgICAgICAgICB0YWdzICJEYXRhYmFzZSINCiAgICAgICAgICAgIH0NCiAgICAgICAgICAgIA0KICAgICAgICAgICAgbW9uZ28tZGIgPSBjb250YWluZXIgIkNyeXB0byBOb1NRTCBEYXRhYmFzZSIgIkFybWF6ZW5hIG9zIGRhZG9zIGRhcyBjcmlwdG9tb2VkYXMgbW9uaXRvcmFkYXMiICJNb25nbyIgew0KICAgICAgICAgICAgICAgIHRhZ3MgIkRhdGFiYXNlIiwgIk5vU1FMIg0KICAgICAgICAgICAgfQ0KICAgICAgICB9DQogICAgICAgIA0KICAgICAgICBzc28tc3lzdGVtID0gc29mdHdhcmVTeXN0ZW0gIlNTTyBQYXJ0bmVyIFN5c3RlbSIgIkFwbGljYcOnw6NvIGRlIDPCuiBwYXJhIHJlYWxpemFyIGxvZ2luIHVzYW5kbyBTU08iDQogICAgICAgIGNyaXB0by1zeXN0ZW0gPSBzb2Z0d2FyZVN5c3RlbSAiQ3J5cHRvQ29tcGFyZSIgIkFwbGljYcOnw6NvIGRlIDPCuiBwYXJhIGxlciBkYWRvcyBkZSBjcmlwdG9tb2VkYXMiDQogICAgICAgIA0KICAgICAgICANCiAgICAgICAgLy8gSW50ZXJhw6fDtWVzDQogICAgICAgIHUgLT4gZGFzaC1zeXN0ZW0uc3BhICJVc2EgbyBkYXNoYm9hcmQgcGFyYSBmaWx0cmFyIGFzIGNyaXB0b21vZWRhcyINCiAgICAgICAgDQogICAgICAgIGRhc2gtc3lzdGVtIC0+IGNyaXB0by1zeXN0ZW0gIk9idMOpbSBkYWRvcyBwYXJhIGFsaW1lbnRhciBvIHNpc3RlbWEiDQogICAgICAgIA0KICAgICAgICBkYXNoLXN5c3RlbS5zcGEgLT4gZGFzaC1zeXN0ZW0uZGFzaC1yZXN0ICJTb2xpY2l0YSBkYWRvcyBkZSBjcmlwdG9tb2VkYXMgKGxpc3RhIGUgdmFsb3JlcykiICJSRVNUIEFQSSINCiAgICAgICAgZGFzaC1zeXN0ZW0uc3BhIC0+IGRhc2gtc3lzdGVtLmFwaS1nYXRld2F5ICJTb2xpY2l0YSBsb2dpbi9jYWRhc3RybyBkZSB1c3XDoXJpbyIgIkFQSUdBVEVXQVkiDQogICAgICAgIGRhc2gtc3lzdGVtLnNwYSAtPiBkYXNoLXN5c3RlbS5kYXNoLXJlc3QuZ2V0LWNyeXB0by1saXN0LWJ5LW5hbWUgIkxpc3RhIGFzIGNyaXB0b21vZWRhcyBkaXNwb27DrXZlaXMiDQogICAgICAgIGRhc2gtc3lzdGVtLnNwYSAtPiBkYXNoLXN5c3RlbS5kYXNoLXJlc3QuZ2V0LWNyeXB0by12YWx1ZSAiUmV0b3JuYSBvIHZhbG9yIGRhIGNyaXB0b21vZWRhIHBlc3F1aXNhZGEiDQogICAgICAgIA0KICAgICAgICBkYXNoLXN5c3RlbS5kYXNoLXJlc3QgLT4gZGFzaC1zeXN0ZW0uc3FsLWRiICJSZWFsaXphIG9wZXJhw6fDtWVzIENSVUQgbm8gYmFuY28gZG8gZGFzaGJvYXJkIiAiU1FMIg0KICAgICAgICANCiAgICAgICAgZGFzaC1zeXN0ZW0uZGFzaC1yZXN0LmdldC1jcnlwdG8tbGlzdC1ieS1uYW1lIC0+IGRhc2gtc3lzdGVtLnJlZGlzLWRiICJDb25zdWx0YSBkYWRvcyBlbSBjYWNoZSIgIlJlZGlzIg0KICAgICAgICBkYXNoLXN5c3RlbS5kYXNoLXJlc3QuZ2V0LWNyeXB0by1saXN0LWJ5LW5hbWUgLT4gZGFzaC1zeXN0ZW0uc3FsLWRiICJDb25zdWx0YSBlIGF0dWFsaXphIGRhZG9zIHBlcnNpc3RlbnRlcyIgIlNRTCINCiAgICAgICAgZGFzaC1zeXN0ZW0uZGFzaC1yZXN0LmNyb24tY3J5cHRvLWxpc3QtdXBkYXRlIC0+IGNyaXB0by1zeXN0ZW0gIlNvbGljaXRhIGRhZG9zIGF0dWFsaXphZG9zIGRlIGNyaXB0b21vZWRhcyBlIGF0dWFsaXphIGJhbmNvcyBlIGNhY2hlIiAiQVBJIEV4dGVybmEiDQogICAgICAgIGNyaXB0by1zeXN0ZW0gLT4gZGFzaC1zeXN0ZW0uZGFzaC1yZXN0LndlYnNvY2tldC1jcnlwdG8tcmV0dXJuICJFbnZpYSBkYWRvcyBhdHVhbGl6YWRvcyBkZSBjcmlwdG9tb2VkYXMiICJXZWJTb2NrZXQiDQogICAgICAgIGRhc2gtc3lzdGVtLnNwYSAtPiBkYXNoLXN5c3RlbS5kYXNoLXJlc3Qud2Vic29ja2V0LWNyeXB0by1yZXR1cm4gIlNvbGljaXRhIGF0dWFsaXphw6fDtWVzIGVtIHRlbXBvIHJlYWwgcGFyYSBvIGZyb250ZW5kIiAiV2ViU29ja2V0Ig0KICAgICAgICANCiAgICAgICAgZGFzaC1zeXN0ZW0uZGFzaC1yZXN0LmdldC1jcnlwdG8tdmFsdWUgLT4gZGFzaC1zeXN0ZW0ubW9uZ28tZGIgIlNhbHZhIGNvcnJlbGHDp8OjbyBlbnRyZSBvIGlkIGRvIHVzdcOhcmlvIGUgYXMgY3JpcHRvcyIgIlNRTCINCiAgICAgICAgZGFzaC1zeXN0ZW0uZGFzaC1yZXN0LmdldC1jcnlwdG8tdmFsdWUgLT4gY3JpcHRvLXN5c3RlbSAiQ29uZmlybWEgbyB2YWxvciBkYSBjcmlwdG9tb2VkYSIgIkFQSSBFeHRlcm5hIg0KICAgICAgICANCiAgICAgICAgZGFzaC1zeXN0ZW0udXNlci1yZXN0LnBvc3QtbG9naW4tdXNlciAtPiBzc28tc3lzdGVtICJSZWFsaXphIGxvZ2luIHVzYW5kbyBwbGF0YWZvcm1hcyBkZSAzwroiDQogICAgICAgIGRhc2gtc3lzdGVtLnVzZXItcmVzdC5wb3N0LWxvZ2luLXVzZXIgLT4gZGFzaC1zeXN0ZW0ub3JhY2xlLWRiICJQZXNxdWlzYSBkZSBkYWRvcyINCiAgICAgICAgZGFzaC1zeXN0ZW0udXNlci1yZXN0LnBvc3QtcmVnaXN0ZXItdXNlci1sb2dpbiAtPiBkYXNoLXN5c3RlbS5vcmFjbGUtZGIgIlJlYWxpemEgb3BlcmHDp8O1ZXMgQ1JVRCBub3MgZGFkb3MgZGUgdXN1w6FyaW9zIg0KICAgICAgICBkYXNoLXN5c3RlbS5hcGktZ2F0ZXdheSAtPiBkYXNoLXN5c3RlbS51c2VyLXJlc3QucG9zdC1sb2dpbi11c2VyICJGYXplciBsb2dpbiINCiAgICAgICAgZGFzaC1zeXN0ZW0uYXBpLWdhdGV3YXkgLT4gZGFzaC1zeXN0ZW0udXNlci1yZXN0LnBvc3QtcmVnaXN0ZXItdXNlci1sb2dpbiAiQ3JpYXIgdXN1YXJpbyINCiAgICAgICAgDQogICAgfQ0KDQogICAgdmlld3Mgew0KICAgICAgICBzeXN0ZW1Db250ZXh0IGRhc2gtc3lzdGVtICJEYXNoQ3JpcHRvQ29udGV4dCIgew0KICAgICAgICAgICAgaW5jbHVkZSAqDQogICAgICAgICAgICBhdXRvbGF5b3V0IGxyDQogICAgICAgIH0NCg0KICAgICAgICBjb250YWluZXIgZGFzaC1zeXN0ZW0gIkRhc2hDcmlwdG9Db250YWluZXIiIHsNCiAgICAgICAgICAgIGluY2x1ZGUgKg0KICAgICAgICAgICAgYXV0b2xheW91dCBscg0KICAgICAgICB9DQogICAgICAgIA0KICAgICAgICBjb21wb25lbnQgZGFzaC1zeXN0ZW0uZGFzaC1yZXN0ICJEYXNoQ3JpcHRvQXBpIiB7DQogICAgICAgICAgICBpbmNsdWRlICoNCiAgICAgICAgICAgIGF1dG9sYXlvdXQgbHINCiAgICAgICAgfQ0KICAgICAgICANCiAgICAgICAgY29tcG9uZW50IGRhc2gtc3lzdGVtLnVzZXItcmVzdCAiRGFzaFVzZXJBcGkiIHsNCiAgICAgICAgICAgIGluY2x1ZGUgKg0KICAgICAgICAgICAgYXV0b2xheW91dCBscg0KICAgICAgICB9DQogICAgICAgIA0KICAgICAgICBzdHlsZXMgew0KICAgICAgICAgICAgZWxlbWVudCAiRWxlbWVudCIgew0KICAgICAgICAgICAgICAgIGNvbG9yICNmZmZmZmYNCiAgICAgICAgICAgIH0NCiAgICAgICAgICAgIGVsZW1lbnQgIlBlcnNvbiIgew0KICAgICAgICAgICAgICAgIGJhY2tncm91bmQgIzg0YTlhYw0KICAgICAgICAgICAgICAgIHNoYXBlIHBlcnNvbg0KICAgICAgICAgICAgfQ0KICAgICAgICAgICAgZWxlbWVudCAiU29mdHdhcmUgU3lzdGVtIiB7DQogICAgICAgICAgICAgICAgYmFja2dyb3VuZCAjM2I2OTc4DQogICAgICAgICAgICAgICAgY29sb3IgI2ZmZmZmZg0KICAgICAgICAgICAgfQ0KICAgICAgICAgICAgZWxlbWVudCAiQ29udGFpbmVyIiB7DQogICAgICAgICAgICAgICAgYmFja2dyb3VuZCAjMjA0MDUxDQogICAgICAgICAgICAgICAgY29sb3IgI2ZmZmZmZg0KICAgICAgICAgICAgfQ0KICAgICAgICAgICAgZWxlbWVudCAiQ29tcG9uZW50IiB7DQogICAgICAgICAgICAgICAgYmFja2dyb3VuZCAjMWExYTFkDQogICAgICAgICAgICAgICAgY29sb3IgI2ZmZmZmZg0KICAgICAgICAgICAgfQ0KICAgICAgICAgICAgZWxlbWVudCAiRGF0YWJhc2UiIHsNCiAgICAgICAgICAgICAgICBzaGFwZSBjeWxpbmRlcg0KICAgICAgICAgICAgICAgIGJhY2tncm91bmQgIzBmNGM3NQ0KICAgICAgICAgICAgICAgIGNvbG9yICNmZmZmZmYNCiAgICAgICAgICAgIH0NCiAgICAgICAgICAgIGVsZW1lbnQgIkZyb250ZW5kIiB7DQogICAgICAgICAgICAgICAgYmFja2dyb3VuZCAjZTRmOWY1DQogICAgICAgICAgICAgICAgY29sb3IgIzAwMDAwMA0KICAgICAgICAgICAgfQ0KICAgICAgICAgICAgZWxlbWVudCAiQmFja2VuZCIgew0KICAgICAgICAgICAgICAgIGJhY2tncm91bmQgIzMyODJiOA0KICAgICAgICAgICAgICAgIGNvbG9yICNmZmZmZmYNCiAgICAgICAgICAgIH0NCiAgICAgICAgICAgIGVsZW1lbnQgIkFQSSIgew0KICAgICAgICAgICAgICAgIGJvcmRlciBzb2xpZA0KICAgICAgICAgICAgICAgIGNvbG91ciAjYmJlMWZhDQogICAgICAgICAgICB9DQogICAgICAgICAgICBlbGVtZW50ICJDYWNoZSIgew0KICAgICAgICAgICAgICAgIGJhY2tncm91bmQgI2Y4YjUwMA0KICAgICAgICAgICAgfQ0KICAgICAgICAgICAgZWxlbWVudCAiTm9TUUwiIHsNCiAgICAgICAgICAgICAgICBiYWNrZ3JvdW5kICNmNjQxNmMNCiAgICAgICAgICAgIH0NCiAgICAgICAgfQ0KICAgIH0NCg0KICAgIGNvbmZpZ3VyYXRpb24gew0KICAgICAgICBzY29wZSBzb2Z0d2FyZXN5c3RlbQ0KICAgIH0NCn0NCg=="
+    },
+    "views": {
+        "componentViews": [
+            {
+                "automaticLayout": {
+                    "applied": true,
+                    "edgeSeparation": 0,
+                    "implementation": "Graphviz",
+                    "nodeSeparation": 300,
+                    "rankDirection": "LeftRight",
+                    "rankSeparation": 300,
+                    "vertices": false
+                },
+                "containerId": "8",
+                "dimensions": {
+                    "height": 3120,
+                    "width": 2350
+                },
+                "elements": [
+                    {
+                        "id": "3",
+                        "x": 200,
+                        "y": 1385
+                    },
+                    {
+                        "id": "9",
+                        "x": 950,
+                        "y": 1985
+                    },
+                    {
+                        "id": "10",
+                        "x": 950,
+                        "y": 1385
+                    },
+                    {
+                        "id": "11",
+                        "x": 950,
+                        "y": 185
+                    },
+                    {
+                        "id": "12",
+                        "x": 950,
+                        "y": 785
+                    },
+                    {
+                        "id": "13",
+                        "x": 1700,
+                        "y": 1985
+                    },
+                    {
+                        "id": "14",
+                        "x": 1700,
+                        "y": 2585
+                    },
+                    {
+                        "id": "16",
+                        "x": 1700,
+                        "y": 1385
+                    },
+                    {
+                        "id": "18",
+                        "x": 1700,
+                        "y": 785
+                    }
+                ],
+                "externalContainerBoundariesVisible": false,
+                "key": "DashCriptoApi",
+                "order": 3,
+                "relationships": [
+                    {
+                        "id": "24"
+                    },
+                    {
+                        "id": "25"
+                    },
+                    {
+                        "id": "27"
+                    },
+                    {
+                        "id": "29"
+                    },
+                    {
+                        "id": "30"
+                    },
+                    {
+                        "id": "32"
+                    },
+                    {
+                        "id": "35"
+                    },
+                    {
+                        "id": "36"
+                    },
+                    {
+                        "id": "38"
+                    }
+                ]
+            },
+            {
+                "automaticLayout": {
+                    "applied": true,
+                    "edgeSeparation": 0,
+                    "implementation": "Graphviz",
+                    "nodeSeparation": 300,
+                    "rankDirection": "LeftRight",
+                    "rankSeparation": 300,
+                    "vertices": false
+                },
+                "containerId": "5",
+                "dimensions": {
+                    "height": 1411,
+                    "width": 2350
+                },
+                "elements": [
+                    {
+                        "id": "4",
+                        "x": 208,
+                        "y": 629
+                    },
+                    {
+                        "id": "6",
+                        "x": 958,
+                        "y": 929
+                    },
+                    {
+                        "id": "7",
+                        "x": 958,
+                        "y": 329
+                    },
+                    {
+                        "id": "15",
+                        "x": 1708,
+                        "y": 329
+                    },
+                    {
+                        "id": "17",
+                        "x": 1708,
+                        "y": 929
+                    }
+                ],
+                "externalContainerBoundariesVisible": false,
+                "key": "DashUserApi",
+                "order": 4,
+                "relationships": [
+                    {
+                        "id": "39"
+                    },
+                    {
+                        "id": "42"
+                    },
+                    {
+                        "id": "44"
+                    },
+                    {
+                        "id": "45"
+                    },
+                    {
+                        "id": "47"
+                    }
+                ]
+            }
+        ],
+        "configuration": {
+            "branding": {},
+            "lastSavedView": "DashCriptoApi",
+            "metadataSymbols": "SquareBrackets",
+            "styles": {
+                "elements": [
+                    {
+                        "color": "#ffffff",
+                        "tag": "Element"
+                    },
+                    {
+                        "background": "#84a9ac",
+                        "shape": "Person",
+                        "tag": "Person"
+                    },
+                    {
+                        "background": "#3b6978",
+                        "color": "#ffffff",
+                        "tag": "Software System"
+                    },
+                    {
+                        "background": "#204051",
+                        "color": "#ffffff",
+                        "tag": "Container"
+                    },
+                    {
+                        "background": "#1a1a1d",
+                        "color": "#ffffff",
+                        "tag": "Component"
+                    },
+                    {
+                        "background": "#0f4c75",
+                        "color": "#ffffff",
+                        "shape": "Cylinder",
+                        "tag": "Database"
+                    },
+                    {
+                        "background": "#e4f9f5",
+                        "color": "#000000",
+                        "tag": "Frontend"
+                    },
+                    {
+                        "background": "#3282b8",
+                        "color": "#ffffff",
+                        "tag": "Backend"
+                    },
+                    {
+                        "border": "Solid",
+                        "color": "#bbe1fa",
+                        "tag": "API"
+                    },
+                    {
+                        "background": "#f8b500",
+                        "tag": "Cache"
+                    },
+                    {
+                        "background": "#f6416c",
+                        "tag": "NoSQL"
+                    }
+                ]
+            },
+            "terminology": {}
+        },
+        "containerViews": [
+            {
+                "automaticLayout": {
+                    "applied": true,
+                    "edgeSeparation": 0,
+                    "implementation": "Graphviz",
+                    "nodeSeparation": 300,
+                    "rankDirection": "LeftRight",
+                    "rankSeparation": 300,
+                    "vertices": false
+                },
+                "dimensions": {
+                    "height": 3120,
+                    "width": 3820
+                },
+                "elements": [
+                    {
+                        "id": "1",
+                        "x": 200,
+                        "y": 1635
+                    },
+                    {
+                        "id": "3",
+                        "x": 900,
+                        "y": 1685
+                    },
+                    {
+                        "id": "4",
+                        "x": 1650,
+                        "y": 1985
+                    },
+                    {
+                        "id": "5",
+                        "x": 2400,
+                        "y": 1985
+                    },
+                    {
+                        "id": "8",
+                        "x": 1650,
+                        "y": 1385
+                    },
+                    {
+                        "id": "13",
+                        "x": 2400,
+                        "y": 1385
+                    },
+                    {
+                        "id": "14",
+                        "x": 2400,
+                        "y": 785
+                    },
+                    {
+                        "id": "15",
+                        "x": 3150,
+                        "y": 1939
+                    },
+                    {
+                        "id": "16",
+                        "x": 2400,
+                        "y": 185
+                    },
+                    {
+                        "id": "17",
+                        "x": 3150,
+                        "y": 2539
+                    },
+                    {
+                        "id": "18",
+                        "x": 2400,
+                        "y": 2585
+                    }
+                ],
+                "externalSoftwareSystemBoundariesVisible": false,
+                "key": "DashCriptoContainer",
+                "order": 2,
+                "relationships": [
+                    {
+                        "id": "19"
+                    },
+                    {
+                        "id": "22"
+                    },
+                    {
+                        "id": "23"
+                    },
+                    {
+                        "id": "26"
+                    },
+                    {
+                        "id": "28"
+                    },
+                    {
+                        "id": "31",
+                        "vertices": [
+                            {
+                                "x": 2100,
+                                "y": 1985
+                            }
+                        ]
+                    },
+                    {
+                        "id": "33",
+                        "vertices": [
+                            {
+                                "x": 2400,
+                                "y": 2314
+                            }
+                        ]
+                    },
+                    {
+                        "id": "37",
+                        "vertices": [
+                            {
+                                "x": 2400,
+                                "y": 635
+                            }
+                        ]
+                    },
+                    {
+                        "id": "40"
+                    },
+                    {
+                        "id": "43"
+                    },
+                    {
+                        "id": "46"
+                    }
+                ],
+                "softwareSystemId": "2"
+            }
+        ],
+        "systemContextViews": [
+            {
+                "automaticLayout": {
+                    "applied": false,
+                    "edgeSeparation": 0,
+                    "implementation": "Graphviz",
+                    "nodeSeparation": 300,
+                    "rankDirection": "LeftRight",
+                    "rankSeparation": 300,
+                    "vertices": false
+                },
+                "elements": [
+                    {
+                        "id": "1",
+                        "x": 0,
+                        "y": 0
+                    },
+                    {
+                        "id": "2",
+                        "x": 0,
+                        "y": 0
+                    },
+                    {
+                        "id": "17",
+                        "x": 0,
+                        "y": 0
+                    },
+                    {
+                        "id": "18",
+                        "x": 0,
+                        "y": 0
+                    }
+                ],
+                "enterpriseBoundaryVisible": true,
+                "key": "DashCriptoContext",
+                "order": 1,
+                "relationships": [
+                    {
+                        "id": "20"
+                    },
+                    {
+                        "id": "21"
+                    },
+                    {
+                        "id": "34"
+                    },
+                    {
+                        "id": "41"
+                    }
+                ],
+                "softwareSystemId": "2"
+            }
+        ]
+    }
+}

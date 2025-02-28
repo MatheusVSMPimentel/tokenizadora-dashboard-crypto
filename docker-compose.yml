@@ -1,4 +1,4 @@
-version: '3.1'
+version: '3.8'
 
 services:
 
@@ -29,5 +29,18 @@ services:
       - mysql_data:/var/lib/mysql
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
 
+  mssql:
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    container_name: mssql
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=YourStrong@Passw0rd
+      - MSSQL_PID=Express              # Define a edição como Express (gratuita)
+    ports:
+      - "14444:1433"                   # Mapeia a porta padrão do MSSQL para o host
+    volumes:
+      - mssql_data:/var/opt/mssql      # Volume para persistência dos dados
+
 volumes:
   mysql_data:
+  mssql_data:
