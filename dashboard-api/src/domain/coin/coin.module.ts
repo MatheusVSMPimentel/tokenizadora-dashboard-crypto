@@ -1,7 +1,6 @@
 // src/crypto/crypto.module.ts
 import { Module } from '@nestjs/common';
 import { HttpModule } from '@nestjs/axios';
-import { CoinApiService } from 'src/integration/external-data/coin.api.service';
 import { ScheduleModule } from '@nestjs/schedule';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Coin } from './entities/coin.entity';
@@ -15,7 +14,10 @@ import { CoinService } from './services/coin.service';
     ScheduleModule.forRoot(),
     TypeOrmModule.forFeature([Coin]),],
   controllers: [CoinController],
-  providers: [CoinApiService, CoinService, CoinListService, CoinListScheduler],
-  exports: [CoinApiService, CoinService],
+  providers: [{
+    provide: 'ICoinApi', // O token usado para identificar o provider
+    useClass: CoinService,   // A classe concreta que implementa a interface
+  }, CoinService, CoinListService, CoinListScheduler],
+  exports: ['ICoinApi', CoinService],
 })
 export class CoinModule {}
