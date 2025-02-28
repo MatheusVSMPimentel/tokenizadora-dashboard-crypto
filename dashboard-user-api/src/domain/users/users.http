@@ -1,0 +1,29 @@
+###list user by id
+GET http://localhost:3000/users/1
+
+###List Users
+GET http://localhost:3000/users/
+
+###Create Users
+POST http://localhost:3000/users/
+Content-Type: application/json
+
+{
+    "name": "John Doe",
+    "email": "test@test.com",
+    "birthday": "1998-12-12",
+    "password": "ASfd8-12-12",
+    "confirmPassword": "ASfd8-12-12"
+
+}
+
+###Update Users
+PATCH http://localhost:3000/users/1
+Content-Type: application/json
+
+{
+    "name": ""
+}
+
+###Delete Users
+DELETE http://localhost:3000/users/1
