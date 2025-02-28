@@ -1,0 +1,21 @@
+version: '3.1'
+
+services:
+  mysql:
+    image: mysql
+    container_name: mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: SenhaDoRoot123
+      # Mesmo que você já defina MYSQL_DATABASE, o script garantirá a criação e os privilégios.
+      MYSQL_DATABASE: userclient
+      MYSQL_USER: usrclient
+      MYSQL_PASSWORD: SenhaDoUsuario123
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+
+volumes:
+  mysql_data:
