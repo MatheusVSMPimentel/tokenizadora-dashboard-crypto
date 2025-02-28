@@ -1,14 +1,15 @@
 // src/crypto/crypto-data.service.ts
-import { Injectable, HttpException } from '@nestjs/common';
+import { Injectable, HttpException, Inject } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import { firstValueFrom } from 'rxjs';
-import { ICryptoData } from 'src/domain/external-data/coin.api.inteface';
 import { CoinListResponseDto } from 'src/domain/external-data/dto/coin-list-response.dto';
+import { ICoinApi } from 'src/domain/external-data/coin.api.inteface';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
-export class CoinApiService implements ICryptoData {
+export class CoinApiService implements ICoinApi {
 
-  constructor(private readonly httpService: HttpService) {}
+  constructor(private readonly httpService: HttpService, private readonly configService: ConfigService) {}
 
   async getCryptoValue(crypto: string): Promise<number> {
     const url = `https://min-api.cryptocompare.com/data/price?fsym=${crypto.toUpperCase()}&tsyms=USD`;
@@ -25,7 +26,7 @@ export class CoinApiService implements ICryptoData {
     const baseUrl = 'https://min-api.cryptocompare.com/data/all/coinlist';
     const params = {
       summary: true,
-      api_key: '1d0301b5eb60baa4176f1c4a9ebdca828b1aeec339479f6d283e1f6a0e356c1b',
+      api_key: this.configService.get<string>('API_KEY'),
     };
 
     try {
