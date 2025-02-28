@@ -1,5 +1,14 @@
 
-###Login user
+###Login user dcoker compose
+POST http://localhost:3001/auth/login
+Content-Type: application/json
+
+{
+    "email": "test@test.com",
+    "password": "ASfd8-12-12"
+}
+
+###Login user local
 POST http://localhost:3000/auth/login
 Content-Type: application/json
 
