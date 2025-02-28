@@ -12,7 +12,18 @@ services:
       - '3001:3000'
     depends_on:
       - mysql
-  
+
+  dashboard-api:
+    build:
+      context: ./dashboard-api
+      dockerfile: Dockerfile
+    env_file:
+      - ./env/dashboard-api.env/
+    ports:
+      - '3002:3000'
+    depends_on:
+      - mssql
+
   mysql:
     image: mysql
     container_name: mysql
