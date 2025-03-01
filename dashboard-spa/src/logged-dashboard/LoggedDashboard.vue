@@ -1,14 +1,29 @@
 <template>
   <div class="dashboard-container">
-    <!-- Componentes na sidebar e conteúdo principal -->
     <Sidebar />
     <div class="main-content">
-      <SearchNavbar @search-results="updateResults" />
+      <!-- Navbar com SearchBar embutida -->
+      <Navbar @coin-selected="handleCoinSelected" />
       <section class="section">
         <div class="container">
-          <CryptoCardComponent title="Card Title" :footerLinks="cardFooterLinks">
-            Esta é uma área de conteúdo dentro do card. Exiba dados, gráficos ou estatísticas aqui.
-          </CryptoCardComponent>
+          <!-- Exibe os cards para as moedas selecionadas -->
+          <div v-if="selectedCoins && selectedCoins.length > 0">
+            <div class="columns is-multiline">
+              <div class="column is-one-quarter" v-for="(coin, index) in selectedCoins" :key="index">
+                <CardComponent :title="coin.symbol">
+                  <div class="content">
+                    <figure class="image is-128x128">
+                      <img :src="coin.imageUrl" alt="Logo da moeda" />
+                    </figure>
+                    <p>{{ coin.fullName }}</p>
+                  </div>
+                </CardComponent>
+              </div>
+            </div>
+          </div>
+          <div v-else>
+            <p>Selecione uma moeda na barra de pesquisa para ver suas informações.</p>
+          </div>
         </div>
       </section>
     </div>
@@ -16,37 +31,34 @@
 </template>
 
 <script>
-import Sidebar from './components/Sidebar.vue';
 import CryptoCardComponent from './components/CryptoCardComponent.vue';
-import SearchNavbar from './components/SearchNavbar.vue';
+import Navbar from '../shared/components/navbar/Navbar.vue';
 
 export default {
   name: 'Dashboard',
   components: {
-    Sidebar,
-    SearchNavbar,
-    CryptoCardComponent
+    CryptoCardComponent,
+    Navbar
   },
   data() {
     return {
-      results: [],
-      cardFooterLinks: [
-        { label: 'Save', url: '#' },
-        { label: 'Edit', url: '#' },
-        { label: 'Delete', url: '#' }
-      ]
+      selectedCoins: []
     };
   },
   methods: {
-    updateResults(data) {
-      this.results = data;
+    handleCoinSelected(coin) {
+      // Verifica se a moeda já foi selecionada.
+      if (!this.selectedCoins.some(c => c.symbol === coin.symbol)) {
+        this.selectedCoins.push(coin);
+      }
     }
   }
-}
+};
 </script>
 
 <style scoped>
 .dashboard-container {
+  padding: 1rem;
   display: flex;
   min-height: 100vh;
 }
