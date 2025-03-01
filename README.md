@@ -7,10 +7,14 @@ Este projeto é uma aplicação de dashboard para gerenciamento de criptomoedas,
 
 ![Screenshot do Dashboard](./doc/dashboard.png)
 
+>**Como usar...**
+> - Para rodar os projetos é só rodar o docker `docker compose up -d`
+> - Navegue para [Aplicação Dashboard](http://localhost:8081) <http://localhost:8081>
+
+
 > **Dica de Desenvolvimento:**  
-> Para rodar os projetos é só rodar o docker `docker compose up -d`
 > Em cada pasta de domínio deste projeto, há um arquivo `.http` que pode ser usado para gerar requisições e testar os endpoints associados. Esses arquivos ajudam na documentação e facilitam os testes durante o desenvolvimento.
-> Acompanhe o [Quadro(Board)](https://github.com/users/MatheusVSMPimentel/projects/3) dentro da aba projetos, para visualizar funções já lançadas e andamento das funções: <https://github.com/users/MatheusVSMPimentel/projects/3>
+>> Acompanhe o [Quadro(Board)](https://github.com/users/MatheusVSMPimentel/projects/3) dentro da aba projetos, para visualizar funções já lançadas e andamento das funções: <https://github.com/users/MatheusVSMPimentel/projects/3>
 
 
 ## Funcionalidades
