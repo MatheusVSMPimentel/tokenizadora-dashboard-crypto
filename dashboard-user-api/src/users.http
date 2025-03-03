@@ -1,8 +1,9 @@
+##Para usar a api com o docker basta mudar a porta para 3001
 ###list user by id
 GET http://localhost:3000/users/1
 
 ###List Users
-GET http://localhost:3000/users/
+GET http://localhost:3001/users/
 
 ###Create Users
 POST http://localhost:3000/users/
@@ -17,12 +18,13 @@ Content-Type: application/json
 
 }
 
-###Update Users
-PATCH http://localhost:3000/users/1
+###Update Users 
+PATCH http://localhost:3000/users/dev_COwdwJhEwJgoNzMMoI3rK
 Content-Type: application/json
 
 {
-    "name": ""
+    "name": "surprise",
+    "password": "ASfd8-12-12"
 }
 
 ###Delete Users
