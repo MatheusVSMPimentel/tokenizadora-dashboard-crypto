@@ -1,4 +1,5 @@
 import { CoinListResponseDto } from "./dto/coin-list-response.dto";
+import { CoinValueInfoResponseDto } from "./dto/coin-value-info-response.dto";
 
 export interface ICoinApi {
     /**
@@ -7,7 +8,7 @@ export interface ICoinApi {
      * @param crypto O código da criptomoeda (ex: 'BTC', 'ETH')
      * @returns O valor da criptomoeda em USD.
      */
-    getCryptoValue(crypto: string): Promise<number>;
+    getCryptoValue(crypto: string): Promise<CoinValueInfoResponseDto>;
 
     /**
      * Obtém lista de criptomoeda disponiveis.

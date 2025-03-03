@@ -1,7 +1,8 @@
-import { Controller, Get, Query } from '@nestjs/common';
+import { Controller, Get, Param, Query, UseGuards, Request } from '@nestjs/common'
 import { CoinService } from './services/coin.service';
 import { CoinInfoDto } from './dto/response/coin-info.dto';
 import { StandardResponseDto } from '../shared/dto/response/standard-response.dto';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 
 @Controller('coins')
 export class CoinController {
@@ -27,4 +28,16 @@ export class CoinController {
         coinDtos
       );
   }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('add/:symbol')
+  async addSymbolToUser(
+    @Param('symbol') symbol: string,
+    @Request() req,
+  ) {
+    const userId = req.user.userId;
+    const cryptoInfo = await this.coinService.getCryptoInfo(userId, symbol);
+    return cryptoInfo;
+  }
+
 }

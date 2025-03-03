@@ -5,17 +5,18 @@ import { firstValueFrom } from 'rxjs';
 import { CoinListResponseDto } from 'src/domain/external-data/dto/coin-list-response.dto';
 import { ICoinApi } from 'src/domain/external-data/coin.api.inteface';
 import { ConfigService } from '@nestjs/config';
+import { CoinValueInfoResponseDto } from 'src/domain/external-data/dto/coin-value-info-response.dto';
 
 @Injectable()
 export class CoinApiService implements ICoinApi {
 
   constructor(private readonly httpService: HttpService, private readonly configService: ConfigService) {}
 
-  async getCryptoValue(crypto: string): Promise<number> {
-    const url = `https://min-api.cryptocompare.com/data/price?fsym=${crypto.toUpperCase()}&tsyms=USD`;
+  async getCryptoValue(crypto: string): Promise<CoinValueInfoResponseDto> {
+    const url = `https://min-api.cryptocompare.com/data/pricemultifull?fsym=${crypto.toUpperCase()}&tsyms=USD`;
     try {
-      const response = await firstValueFrom(this.httpService.get(url));
-      return response.data.USD;
+      const response = await firstValueFrom(this.httpService.get<CoinValueInfoResponseDto>(url));
+      return response.data;
     } catch (error) {
       console.error('Erro ao obter o valor da criptomoeda:', error);
       throw new HttpException('Erro ao buscar o valor da criptomoeda', 500);
