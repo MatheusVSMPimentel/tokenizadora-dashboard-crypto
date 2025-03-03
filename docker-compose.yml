@@ -21,11 +21,14 @@ services:
       context: ./dashboard-api
       dockerfile: Dockerfile
     env_file:
-      - ./env/dashboard-api.env/
+      - ./env/dashboard-api.env
     ports:
       - '3002:3000'
     depends_on:
-      - mssql
+      mongo:
+        condition: service_started
+      mssql:
+        condition: service_started
     networks:
       - dashboard-network
 
@@ -35,7 +38,7 @@ services:
       context: ./dashboard-spa
       dockerfile: Dockerfile
     env_file:
-      - ./env/dashboard-spa.env/
+      - ./env/dashboard-spa.env
     ports:
       - '8081:80'
     depends_on:
@@ -79,9 +82,22 @@ services:
     networks:
       - dashboard-network
 
+  mongo:
+    image: mongo:latest
+    container_name: mongo
+    restart: always
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - dashboard-network
+
+
 volumes:
   mysql_data:
   mssql_data:
+  mongo_data:
 networks:
   dashboard-network:
     driver: bridge
