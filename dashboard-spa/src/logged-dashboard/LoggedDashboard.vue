@@ -13,7 +13,7 @@
                 <CardComponent :title="coin.symbol">
                   <div class="content">
                     <figure class="image is-128x128">
-                      <img :src="coin.imageUrl" alt="Logo da moeda" />
+                      <img :src="'https://www.cryptocompare.com'+coin.imageUrl" alt="Logo da moeda" />
                     </figure>
                     <p>{{ coin.fullName }}</p>
                   </div>
