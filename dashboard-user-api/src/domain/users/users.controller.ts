@@ -20,14 +20,14 @@ export class UsersController {
   @Get(':id')
   async findOne(@Param('id') id: string) {
     const developer = await this.usersService.findOne(id);
-    if (developer) throw new NotFoundException();
+    if (!developer) throw new NotFoundException();
     return developer
   }
 
   @Patch(':id')
   async update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
     const developer = await this.usersService.update(id, updateUserDto);
-    if (developer) throw new NotFoundException();
+    if (!developer) throw new NotFoundException();
     return developer
   }
 
@@ -36,7 +36,7 @@ export class UsersController {
   async remove(@Param('id') id: string) {
     const developer = await this.usersService.remove(id);
 
-    if (developer) throw new NotFoundException();
+    if (!developer) throw new NotFoundException();
 
     return 
   }
