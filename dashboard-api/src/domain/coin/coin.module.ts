@@ -8,16 +8,34 @@ import { CoinListScheduler } from './coin-list.scheduler';
 import { CoinListService } from './services/coin-list.service';
 import { CoinController } from './coin.controller';
 import { CoinService } from './services/coin.service';
+import { MongooseModule } from '@nestjs/mongoose';
+import { Dashboard, DashboardSchema } from './schemas/dashboard.schema';
+import { ConfigService } from '@nestjs/config';
+import { CoinApiService } from 'src/infrastructure/external-data/coin.api.service';
+import { CoinValue, CoinValueSchema } from './schemas/coin-value.schema';
 
 @Module({
-  imports: [HttpModule,
+  imports: [
+    HttpModule,
     ScheduleModule.forRoot(),
-    TypeOrmModule.forFeature([Coin]),],
+    TypeOrmModule.forFeature([Coin]),
+    MongooseModule.forFeature([
+      { name: Dashboard.name, schema: DashboardSchema },
+      { name: CoinValue.name, schema: CoinValueSchema },
+    ]),
+  ],
   controllers: [CoinController],
-  providers: [{
-    provide: 'ICoinApi', // O token usado para identificar o provider
-    useClass: CoinService,   // A classe concreta que implementa a interface
-  }, CoinService, CoinListService, CoinListScheduler],
+  providers: [
+    {
+      provide: 'ICoinApi', // Token para identificação
+      useClass: CoinApiService,
+    },
+    ConfigService,
+    CoinApiService,
+    CoinService,
+    CoinListService,
+    CoinListScheduler,
+  ],
   exports: ['ICoinApi', CoinService],
 })
 export class CoinModule {}

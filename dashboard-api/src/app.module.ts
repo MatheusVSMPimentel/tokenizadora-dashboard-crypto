@@ -5,10 +5,12 @@ import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { CoinModule } from './domain/coin/coin.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { CoinApiService } from './infrastructure/external-data/coin.api.service';
+import { MongooseModule } from '@nestjs/mongoose';
+import { AuthModule } from './domain/auth/auth.module';
 
 @Module({
   imports: [
-    HttpModule,
+    ConfigModule.forRoot({isGlobal: true,}),
     ScheduleModule.forRoot(),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
@@ -27,7 +29,17 @@ import { CoinApiService } from './infrastructure/external-data/coin.api.service'
         }, 
       }),
     }),
-    CoinModule, ConfigModule
+    MongooseModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: (configService: ConfigService) => {
+        const uri = configService.get<string>('MONGO_URI');
+        console.log('MONGO_URI:', uri); // Para debug: deve imprimir mongodb://mongo:27017/nest
+        return {uri: uri}
+      }, 
+      inject: [ConfigService],
+    }),
+    AuthModule,
+    HttpModule, CoinModule, 
   ],
   providers: [CoinApiService, ConfigService],
   controllers: [],
