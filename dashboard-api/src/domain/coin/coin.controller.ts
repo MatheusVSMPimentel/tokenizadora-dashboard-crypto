@@ -29,13 +29,13 @@ export class CoinController {
       );
   }
 
-  @UseGuards(JwtAuthGuard)
+  //@UseGuards(JwtAuthGuard)
   @Get('add/:symbol')
   async addSymbolToUser(
     @Param('symbol') symbol: string,
     @Request() req,
   ) {
-    const userId = req.user.userId;
+    const userId = "1"; //req.user.userId;
     const cryptoInfo = await this.coinService.getCryptoInfo(userId, symbol);
     return cryptoInfo;
   }
