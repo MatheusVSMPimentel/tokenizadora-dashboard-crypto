@@ -5,4 +5,4 @@ GET http://localhost:3000/coins/?filter=
 GET http://localhost:3002/coins/?filter=
 
 ###get coin value by symbol docker
-GET http://localhost:3002/coins/add/:symbol
+GET http://localhost:3002/coins/add/BTC
