@@ -5,7 +5,7 @@
         <input
           type="text"
           class="input"
-          placeholder="Pesquisar moeda..."
+          placeholder="Pesquisar moeda (ex.: BTC)"
           v-model.trim="searchTerm"
           @input="onInput"
         />
@@ -14,7 +14,7 @@
         </span>
       </p>
     </div>
-    <!-- Dropdown para exibir os resultados com scroll se necessário -->
+    <!-- Dropdown para exibir os resultados -->
     <div v-if="searchResults.length > 0" class="dropdown is-active">
       <div class="dropdown-menu" role="menu">
         <div class="dropdown-content">
@@ -46,7 +46,6 @@ export default {
   },
   methods: {
     onInput() {
-      // Debounce: aguarda 300ms para disparar a busca
       if (this.timeoutId) clearTimeout(this.timeoutId);
       this.timeoutId = setTimeout(() => {
         this.fetchResults();
@@ -55,14 +54,13 @@ export default {
     async fetchResults() {
       if (!this.searchTerm) {
         this.searchResults = [];
-        this.$emit("search-results", []);
         return;
       }
       try {
         const response = await axios.get("http://localhost:3002/coins", {
-          params: { filter: this.searchTerm },
+          params: { filter: this.searchTerm }
         });
-        // Supondo que o endpoint retorne o objeto { success, message, data, count }
+        // Supondo que a resposta contenha { data: [...] }
         this.searchResults = response.data.data;
       } catch (error) {
         console.error("Erro ao buscar moedas:", error);
@@ -70,7 +68,7 @@ export default {
       }
     },
     selectCoin(coin) {
-      // Atualiza o input com o símbolo, limpa os resultados e emite o evento
+      // Ao clicar em um item, atualiza o input com o objeto selecionado e emite o evento com o objeto completo.
       this.searchTerm = coin.symbol;
       this.searchResults = [];
       this.$emit("coin-selected", coin);
@@ -84,7 +82,6 @@ export default {
   position: relative;
 }
 
-/* Adiciona max-height e overflow-y para o dropdown */
 .dropdown {
   position: absolute;
   top: 100%;
@@ -94,11 +91,11 @@ export default {
 }
 
 .dropdown-menu {
-  max-height: 300px; /* Ajuste o valor conforme necessário */
+  max-height: 300px;
   overflow-y: auto;
 }
 
-/* Opcional: melhorar a aparência das barras de rolagem */
+/* Scrollbar styling for Webkit */
 .dropdown-menu::-webkit-scrollbar {
   width: 6px;
 }

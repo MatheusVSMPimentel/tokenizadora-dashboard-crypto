@@ -1,5 +1,5 @@
 // src/crypto/crypto-data.service.ts
-import { Injectable, HttpException, Inject } from '@nestjs/common';
+import { Injectable, HttpException, Inject, NotFoundException } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import { firstValueFrom } from 'rxjs';
 import { CoinListResponseDto } from 'src/domain/external-data/dto/coin-list-response.dto';
@@ -14,10 +14,17 @@ export class CoinApiService implements ICoinApi {
 
   async getCryptoValue(crypto: string): Promise<CoinValueInfoResponseDto> {
     const url = `https://min-api.cryptocompare.com/data/pricemultifull?fsyms=${crypto.toUpperCase()}&tsyms=USD`;
+    console.log(url)
+
     try {
       const response = await firstValueFrom(this.httpService.get<CoinValueInfoResponseDto>(url));
       return response.data;
     } catch (error) {
+      if(error.response.includes('cccagg_or_exchange market does not exist for this coin pair'))
+      {
+        console.error('Erro ao obter o valor da criptomoeda em USD:', error);
+        return { Message: error.response }
+      }
       console.error('Erro ao obter o valor da criptomoeda:', error);
       throw new HttpException('Erro ao buscar o valor da criptomoeda', 500);
     }
