@@ -17,7 +17,6 @@ export class UsersService {
     if(developer) throw new ConflictException()
     dto.verifyDtoPassword;
     developer =  this.repository.create(dto);
-    developer.password = dto.password;
     return await this.repository.save(developer);
   }
 
