@@ -1,5 +1,5 @@
 // src/crypto/coin.service.ts
-import { Inject, Injectable } from '@nestjs/common';
+import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, Like } from 'typeorm';
 import { Coin } from '../entities/coin.entity';
@@ -40,7 +40,10 @@ export class CoinService {
 
   async getCryptoInfo(userId: string, symbol: string): Promise<any> {
     const cryptoInfo = await this.cryptoApiService.getCryptoValue(symbol);
+    console.log(cryptoInfo)
+    if(!cryptoInfo.RAW || cryptoInfo.Message) throw new BadRequestException(cryptoInfo.Message) ;
     const usdData = cryptoInfo.RAW[symbol].USD;
+    console.log(usdData)
 
     let coin = await this.coinModel.findOne({ symbol });
     if (!coin) {
