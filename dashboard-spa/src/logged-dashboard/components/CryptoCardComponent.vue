@@ -1,38 +1,51 @@
 <template>
   <div class="card">
-    <header class="card-header">
-      <p class="card-header-title">
-        {{ title }}
-      </p>
-    </header>
-    <div class="card-content">
-      <div class="content">
-        <slot></slot>
-      </div>
-    </div>
-    <footer class="card-footer" v-if="footerLinks && footerLinks.length">
-      <a v-for="(link, index) in footerLinks" :key="index" :href="link.url" class="card-footer-item">
-        {{ link.label }}
-      </a>
-    </footer>
+    <img :src="coin.imageUrl" alt="Logo da moeda" class="card-img" />
+    <h2 class="card-title">{{ coin.name }}</h2>
+    <p class="card-symbol">Símbolo: {{ coin.symbol }}</p>
+    <p class="card-price">Preço: {{ coin.price }}</p>
+    <p class="card-change">
+      Variação:
+      <span :class="{'positive': coin.percentualChange >= 0, 'negative': coin.percentualChange < 0}">
+        {{ coin.percentualChange.toFixed(2) }}%
+      </span>
+    </p>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'CryptoCardComponent',
+  name: 'CardComponent',
   props: {
-    title: {
-      type: String,
-      required: true
+    coin: {
+      type: Object,
+      required: true,
     },
-    footerLinks: {
-      type: Array,
-      default: () => []
-    }
-  }
-}
+  },
+};
 </script>
 
 <style scoped>
+.card {
+  border: 1px solid #ccc;
+  padding: 16px;
+  border-radius: 8px;
+  max-width: 300px;
+  margin: 16px auto;
+  text-align: center;
+}
+
+.card-img {
+  width: 128px;
+  height: 128px;
+  object-fit: contain;
+}
+
+.positive {
+  color: green;
+}
+
+.negative {
+  color: red;
+}
 </style>

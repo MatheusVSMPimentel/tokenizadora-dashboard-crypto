@@ -1,37 +1,28 @@
 <template>
   <div class="dashboard-container">
-    <Sidebar />
-    <div class="main-content">
-      <!-- Navbar com SearchBar embutida -->
-      <Navbar @coin-selected="handleCoinSelected" />
-      <section class="section">
-        <div class="container">
-          <!-- Exibe os cards para as moedas selecionadas -->
-          <div v-if="selectedCoins && selectedCoins.length > 0">
-            <div class="columns is-multiline">
-              <div class="column is-one-quarter" v-for="(coin, index) in selectedCoins" :key="index">
-                <CardComponent :title="coin.symbol">
-                  <div class="content">
-                    <figure class="image is-128x128">
-                      <img :src="'https://www.cryptocompare.com'+coin.imageUrl" alt="Logo da moeda" />
-                    </figure>
-                    <p>{{ coin.fullName }}</p>
-                  </div>
-                </CardComponent>
-              </div>
-            </div>
-          </div>
-          <div v-else>
-            <p>Selecione uma moeda na barra de pesquisa para ver suas informações.</p>
-          </div>
+    <!-- Navbar com a SearchBar integrada -->
+    <Navbar @coin-selected="onCoinSelected" />
+    <section class="section">
+      <div class="container">
+        <!-- Renderiza os cards para cada moeda selecionada -->
+        <div class="cards-wrapper">
+          <CryptoCardComponent
+            v-for="(coin, index) in selectedCoins"
+            :key="index"
+            :coin="coin"
+          />
         </div>
-      </section>
-    </div>
+        <div v-if="selectedCoins.length === 0">
+          <p>Selecione uma moeda na barra de pesquisa para ver suas informações.</p>
+        </div>
+      </div>
+    </section>
   </div>
 </template>
 
 <script>
 import CryptoCardComponent from './components/CryptoCardComponent.vue';
+import axios from 'axios';
 import Navbar from '../shared/components/navbar/Navbar.vue';
 
 export default {
@@ -42,17 +33,40 @@ export default {
   },
   data() {
     return {
-      selectedCoins: []
+      selectedCoins: [],
+      token: "", // JWT token, se necessário
     };
   },
+  mounted() {
+    // Exemplo: obter o token armazenado em localStorage
+    this.token = localStorage.getItem('token') || "";
+  },
   methods: {
-    handleCoinSelected(coin) {
-      // Verifica se a moeda já foi selecionada.
-      if (!this.selectedCoins.some(c => c.symbol === coin.symbol)) {
-        this.selectedCoins.push(coin);
+    async onCoinSelected(selected) {
+      try {
+        const headers = this.token ? { Authorization: `Bearer ${this.token}` } : {};
+        const response = await axios.get(`http://localhost:3002/coins/add/${selected.symbol}`, { headers });
+        const coinData = response.data;
+
+        // Se já existir a moeda, atualize-a; caso contrário, adicione-a
+        const index = this.selectedCoins.findIndex(coin => coin.symbol === coinData.symbol);
+        if (index !== -1) {
+          this.$set(this.selectedCoins, index, coinData);
+        } else {
+          this.selectedCoins.push(coinData);
+        }
+      } catch (error) {
+        console.error('Erro ao buscar dados da moeda:', error);
+        // Verifica se o erro possui uma mensagem específica sobre a falta de par com USD.
+        const errorMessage = error.response?.data?.message || error.response?.data?.Message || '';
+        if (errorMessage.includes('does not exist for this coin pair')) {
+          alert("Esta moeda não possui par de exchange com USD.");
+        } else {
+          alert("Erro ao buscar dados da moeda. Por favor, tente novamente.");
+        }
       }
-    }
-  }
+    },
+  },
 };
 </script>
 
@@ -60,12 +74,18 @@ export default {
 .dashboard-container {
   padding: 1rem;
   display: flex;
+  flex-direction: column;
   min-height: 100vh;
 }
 
-.main-content {
+.section {
   flex: 1;
+}
+
+.cards-wrapper {
   display: flex;
-  flex-direction: column;
+  flex-wrap: wrap;
+  gap: 16px;
+  justify-content: center;
 }
 </style>
