@@ -6,7 +6,7 @@ GET http://localhost:3000/users/1
 GET http://localhost:3001/users/
 
 ###Create Users
-POST http://localhost:3000/users/
+POST http://localhost:3001/users/
 Content-Type: application/json
 
 {
@@ -19,7 +19,7 @@ Content-Type: application/json
 }
 
 ###Update Users 
-PATCH http://localhost:3000/users/dev_COwdwJhEwJgoNzMMoI3rK
+PATCH http://localhost:3001/users/dev_DSYRqgsscIaHyQZTetz6z
 Content-Type: application/json
 
 {
