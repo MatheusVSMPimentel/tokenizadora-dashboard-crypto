@@ -1,15 +1,33 @@
 <template>
   <div class="card">
     <header class="card-header">
-      <p class="card-header-title">Login</p>
+      <p class="card-header-title">Cadastro</p>
     </header>
     <div class="card-content">
+      <div class="field">
+        <label class="label">Nome</label>
+        <div class="control has-icons-left">
+          <input class="input" type="text" placeholder="Digite seu nome" v-model.trim="name" />
+          <span class="icon is-small is-left">
+            <i class="fas fa-user"></i>
+          </span>
+        </div>
+      </div>
       <div class="field">
         <label class="label">Email</label>
         <div class="control has-icons-left">
           <input class="input" type="email" placeholder="Digite seu email" v-model.trim="email" />
           <span class="icon is-small is-left">
             <i class="fas fa-envelope"></i>
+          </span>
+        </div>
+      </div>
+      <div class="field">
+        <label class="label">Data de Nascimento</label>
+        <div class="control has-icons-left">
+          <input class="input" type="date" v-model="birthday" />
+          <span class="icon is-small is-left">
+            <i class="fas fa-calendar-alt"></i>
           </span>
         </div>
       </div>
@@ -23,9 +41,18 @@
         </div>
       </div>
       <div class="field">
+        <label class="label">Confirmação de Senha</label>
+        <div class="control has-icons-left">
+          <input class="input" type="password" placeholder="Confirme sua senha" v-model.trim="confirmPassword" />
+          <span class="icon is-small is-left">
+            <i class="fas fa-lock"></i>
+          </span>
+        </div>
+      </div>
+      <div class="field">
         <div class="control">
-          <button class="button is-primary is-fullwidth" @click="login" :disabled="loading">
-            <span v-if="!loading">Login</span>
+          <button class="button is-primary is-fullwidth" @click="register" :disabled="loading">
+            <span v-if="!loading">Cadastrar</span>
             <span v-else class="spinner"></span>
           </button>
         </div>
@@ -40,33 +67,40 @@
 <script>
 import axios from "axios";
 export default {
-  name: "LoginForm",
+  name: "RegisterForm",
   data() {
     return {
+      name: "",
       email: "",
+      birthday: "",
       password: "",
+      confirmPassword: "",
       errorMessage: "",
       loading: false
     };
   },
   methods: {
-    async login() {
+    async register() {
       this.errorMessage = "";
       this.loading = true;
       try {
         const response = await axios.post(
-          "http://localhost:3001/auth/login",
-          { email: this.email, password: this.password },
+          "http://localhost:3001/users/",
+          {
+            name: this.name,
+            email: this.email,
+            birthday: this.birthday,
+            password: this.password,
+            confirmPassword: this.confirmPassword
+          },
           { headers: { "Content-Type": "application/json" } }
         );
-        const token = response.data.access_token;
-        localStorage.setItem("token", token);
-        this.$emit("login-success", token);
+        this.$emit("register-success", response.data);
       } catch (error) {
-        console.error("Erro ao fazer login:", error);
+        console.error("Erro ao realizar cadastro:", error);
         this.errorMessage =
           (error.response && error.response.data && error.response.data.message) ||
-          "Erro ao fazer login. Tente novamente.";
+          "Erro ao realizar cadastro. Tente novamente.";
       } finally {
         this.loading = false;
       }
