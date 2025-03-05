@@ -6,3 +6,8 @@ GET http://localhost:3002/coins/?filter=
 
 ###get coin value by symbol docker
 GET http://localhost:3002/coins/add/BTC
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkZXZfRFNZUnFnc3NjSWFIeVFaVGV0ejZ6IiwiZW1haWwiOiJ0ZXN0QHRlc3QuY29tIiwiaWF0IjoxNzQxMTgwMjg0LCJleHAiOjE3NDExODM4ODR9.7URrI6232FEvm-1u_7nUkBuqiU9RybXivkRNGaZ7LXg
+
+###get user coins value by symbol docker
+GET http://localhost:3002/coins/dashboard
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkZXZfRFNZUnFnc3NjSWFIeVFaVGV0ejZ6IiwiZW1haWwiOiJ0ZXN0QHRlc3QuY29tIiwiaWF0IjoxNzQxMTgwMjg0LCJleHAiOjE3NDExODM4ODR9.7URrI6232FEvm-1u_7nUkBuqiU9RybXivkRNGaZ7LXg

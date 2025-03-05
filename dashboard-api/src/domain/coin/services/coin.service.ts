@@ -1,7 +1,7 @@
 // src/crypto/coin.service.ts
 import { BadRequestException, Inject, Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, Like } from 'typeorm';
+import { InjectRepository  } from '@nestjs/typeorm';
+import { Repository, Like, In } from 'typeorm';
 import { Coin } from '../entities/coin.entity';
 import { Dashboard } from '../schemas/dashboard.schema';
 import { Model } from 'mongoose';
@@ -9,7 +9,6 @@ import { InjectModel } from '@nestjs/mongoose';
 import { ICoinApi } from 'src/domain/external-data/coin.api.inteface';
 import { CoinValue } from '../schemas/coin-value.schema';
 import { CoinValueInfo } from '../dto/response/coin-value-info.dto';
-
 @Injectable()
 export class CoinService {
   constructor(
@@ -37,7 +36,7 @@ export class CoinService {
       },
     });
   }
-
+  
   async getCryptoInfo(userId: string, symbol: string): Promise<any> {
     const cryptoInfo = await this.cryptoApiService.getCryptoValue(symbol);
     console.log(cryptoInfo)
@@ -80,5 +79,48 @@ private percentualCryptoValueChange(currentPrice: number, openPrice: number): nu
     throw new Error('Preço de abertura não pode ser zero.');
   }
   return ((currentPrice - openPrice) / openPrice) * 100;
+}
+
+  /**
+   * Método que consulta o dashboard do usuário, obtém a lista de símbolos,
+   * faz uma única chamada externa passando todos os símbolos e retorna uma lista de CoinValueInfo.
+   */
+async getDashboardCoins(userId: string): Promise<CoinValueInfo[]> {
+  // 1. Obtém o documento Dashboard para o usuário
+  const dashboard = await this.dashboardModel.findOne({ userId }).exec();
+  if (!dashboard || !dashboard.symbols || dashboard.symbols.length === 0) {
+    return []; // Se não houver nenhum símbolo, retorna uma lista vazia
+  }
+
+  // 2. Cria uma string separada por vírgulas (exemplo: "BTC,BNB,ETH")
+  const symbolsList = dashboard.symbols.join(',');
+
+  // 3. Consulta a API externa (a URL gerada será similar à do seu curl)
+  const cryptoInfo = await this.cryptoApiService.getCryptoValue(symbolsList);
+  if (!cryptoInfo.RAW) {
+    throw new BadRequestException('Erro ao recuperar dados da API externa.');
+  }
+
+  // 4. Consulta a tabela de moedas de uma única vez usando o operador In
+  const coins = await this.coinRepository.find({
+    where: { symbol: In(dashboard.symbols) },
+  });
+
+  // 5. Mapeia cada moeda para um CoinValueInfo
+  //    A resposta da API externa terá a chave RAW com cada símbolo disponível.
+  const coinValueInfos: CoinValueInfo[] = coins.map((coin) => {
+    if (!cryptoInfo.RAW)
+      return null;
+    const rawData = cryptoInfo.RAW[coin.symbol]?.USD;
+    if (!rawData) {
+      return null; 
+    }
+    const price = rawData.PRICE;
+    const openDay = rawData.OPENDAY;
+    const percentualChange = openDay === 0 ? 0 : ((price - openDay) / openDay) * 100;
+    return CoinValueInfo.CoinValueBuilder(coin, price, percentualChange);
+  }).filter(info => info !== null);
+
+  return coinValueInfos;
 }
 }

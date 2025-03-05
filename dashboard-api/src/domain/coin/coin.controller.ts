@@ -3,6 +3,7 @@ import { CoinService } from './services/coin.service';
 import { CoinInfoDto } from './dto/response/coin-info.dto';
 import { StandardResponseDto } from '../shared/dto/response/standard-response.dto';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { CoinValueInfo } from './dto/response/coin-value-info.dto';
 
 @Controller('coins')
 export class CoinController {
@@ -39,5 +40,16 @@ export class CoinController {
     const cryptoInfo = await this.coinService.getCryptoInfo(userId, symbol);
     return cryptoInfo;
   }
-
+  
+  @UseGuards(JwtAuthGuard)
+  @Get('dashboard')
+  async getDashboardCoins(@Request() req): Promise<StandardResponseDto<CoinValueInfo>> {
+    const userId = req.user.userId; // obtém o userId do token JWT
+    const coinValueInfos = await this.coinService.getDashboardCoins(userId);
+    return new StandardResponseDto<CoinValueInfo>(
+      true,
+      'Lista de moedas obtida com sucesso para o dashboard!',
+      coinValueInfos,
+    );
+  }
 }
