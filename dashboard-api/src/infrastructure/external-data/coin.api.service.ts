@@ -13,9 +13,8 @@ export class CoinApiService implements ICoinApi {
   constructor(private readonly httpService: HttpService, private readonly configService: ConfigService) {}
 
   async getCryptoValue(crypto: string): Promise<CoinValueInfoResponseDto> {
-    const url = `https://min-api.cryptocompare.com/data/pricemultifull?fsyms=${crypto.toUpperCase()}&tsyms=USD`;
-    console.log(url)
-
+    const url = `https://min-api.cryptocompare.com/data/pricemultifull?relaxedValidation=true&fsyms=${crypto.toUpperCase()}&tsyms=USD&api_key=${this.configService.get<string>('API_KEY')}`;
+    console.log(url);
     try {
       const response = await firstValueFrom(this.httpService.get<CoinValueInfoResponseDto>(url));
       return response.data;
