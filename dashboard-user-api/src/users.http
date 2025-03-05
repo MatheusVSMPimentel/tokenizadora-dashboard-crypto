@@ -11,11 +11,10 @@ Content-Type: application/json
 
 {
     "name": "John Doe",
-    "email": "test@test.com",
+    "email": "test1@test.com",
     "birthday": "1998-12-12",
     "password": "ASfd8-12-12",
     "confirmPassword": "ASfd8-12-12"
-
 }
 
 ###Update Users 
