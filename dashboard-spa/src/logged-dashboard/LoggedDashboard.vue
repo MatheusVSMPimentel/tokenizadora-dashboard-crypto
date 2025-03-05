@@ -40,8 +40,21 @@ export default {
   mounted() {
     // Exemplo: obter o token armazenado em localStorage
     this.token = localStorage.getItem('token') || "";
+    this.fetchDashboardCoins();
   },
   methods: {
+    // Método para chamar o endpoint /coins/dashboard da sua dashboard-api
+    async fetchDashboardCoins() {
+      try {
+        const headers = this.token ? { Authorization: `Bearer ${this.token}` } : {};
+        const response = await axios.get('http://localhost:3002/coins/dashboard', { headers });
+        // Supondo que a resposta esteja encapsulada em { success, message, data }
+        this.selectedCoins = response.data.data;
+      } catch (error) {
+        console.error("Erro ao buscar as moedas do dashboard:", error);
+        alert("Erro ao buscar as moedas do dashboard. Tente novamente.");
+      }
+    },
     async onCoinSelected(selected) {
       try {
         const headers = this.token ? { Authorization: `Bearer ${this.token}` } : {};
