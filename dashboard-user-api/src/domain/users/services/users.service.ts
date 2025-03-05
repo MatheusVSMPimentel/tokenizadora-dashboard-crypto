@@ -4,6 +4,7 @@ import { UpdateUserDto } from '../dto/update-user.dto';
 import { Repository } from 'typeorm';
 import { User } from '../entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
+import { CreateUserResponseDto } from '../dto/response/create-user-response.dto';
 
 @Injectable()
 export class UsersService {
@@ -12,12 +13,14 @@ export class UsersService {
     private readonly repository: Repository<User>
   ){}
 
-  async create(dto: CreateUserDto) {
+  async create(dto: CreateUserDto): Promise<CreateUserResponseDto> {
     let developer = await this.repository.findOneBy({ email: dto.email });
     if(developer) throw new ConflictException()
     dto.verifyDtoPassword;
     developer =  this.repository.create(dto);
-    return await this.repository.save(developer);
+    developer.password = dto.password;
+    await this.repository.save(developer);
+    return CreateUserResponseDto.createUserResponseBuilder(developer);
   }
 
   
