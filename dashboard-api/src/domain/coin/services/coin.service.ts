@@ -9,6 +9,8 @@ import { InjectModel } from '@nestjs/mongoose';
 import { ICoinApi } from 'src/domain/external-data/coin.api.inteface';
 import { CoinValue } from '../schemas/coin-value.schema';
 import { CoinValueInfo } from '../dto/response/coin-value-info.dto';
+import { resolve } from 'path';
+import { CoinValueInfoResponseDto } from 'src/domain/external-data/dto/coin-value-info-response.dto';
 @Injectable()
 export class CoinService {
   constructor(
@@ -44,15 +46,7 @@ export class CoinService {
     const usdData = cryptoInfo.RAW[symbol].USD;
     console.log(usdData)
 
-    let coin = await this.coinModel.findOne({ symbol });
-    if (!coin) {
-      coin = new this.coinModel();
-      coin.symbol = symbol;
-    }
-    if(coin.openDay !== usdData.OPENDAY){
-      coin.openDay = usdData.OPENDAY;
-    }
-    await coin.save();
+    const coin = await this.upsertCoinValue(symbol, usdData.PRICE,usdData.OPENDAY);
 
     // Adiciona o símbolo da moeda à lista de moedas acompanhadas pelo usuário
     await this.dashboardModel.findOneAndUpdate(
@@ -61,26 +55,47 @@ export class CoinService {
       { new: true, upsert: true },
     ).exec();
     const coinEntity = await this.coinRepository.findOneByOrFail({symbol});
-    
 
-    return CoinValueInfo.CoinValueBuilder
-    (coinEntity, usdData.PRICE, this.percentualCryptoValueChange(usdData.PRICE, coin.openDay));
+  return CoinValueInfo.CoinValueBuilder(coinEntity, coin);
   }
 
-  /**
- * Calcula a variação percentual entre o preço atual e o preço de abertura do dia.
- * @param precoAtual Preço atual da moeda.
- * @param precoAbertura Preço de abertura do dia.
- * @returns A variação percentual (positivo se houve alta, negativo se houve baixa).
- * @throws Error se o preço de abertura for zero (para evitar divisão por zero).
- */
-private percentualCryptoValueChange(currentPrice: number, openPrice: number): number {
-  if (openPrice === 0) {
-    throw new Error('Preço de abertura não pode ser zero.');
+/**
+   * Busca ou atualiza o documento CoinValue no MongoDB.
+   * @param symbol Símbolo da moeda.
+   * @param price Preço atual.
+   * @param openDay Preço de abertura do dia.
+   * @returns Documento CoinValue atualizado.
+   */
+async upsertCoinValue(symbol: string, price?: number, openDay?: number): Promise<CoinValue> {
+  let coinValue = await this.coinModel.findOne({ symbol }).exec();
+  if (!coinValue) {
+    coinValue = new this.coinModel(); // Cria um novo documento se não existir
+    coinValue.symbol = symbol;
+  } 
+
+  if (openDay !== undefined && coinValue.openDay !== openDay) {
+    coinValue.openDay = openDay;
   }
-  return ((currentPrice - openPrice) / openPrice) * 100;
+  if (price !== undefined && coinValue.price !== price) {
+    coinValue.price = price;
+  }
+  coinValue.percentDifference = this.calculatePercentDifference(coinValue)
+  await coinValue.save();
+  return coinValue;
 }
 
+
+   /**
+   * Calcula a variação percentual entre o preço atual e o preço de abertura.
+   * @param currentPrice Preço atual da moeda.
+   * @returns A variação percentual.
+   */
+  private calculatePercentDifference(coin: CoinValue): number {
+    if (!coin.openDay || coin.openDay === 0) {
+      return 0;
+    }
+    return ((coin.price - coin.openDay) / coin.openDay) * 100;
+  }
   /**
    * Método que consulta o dashboard do usuário, obtém a lista de símbolos,
    * faz uma única chamada externa passando todos os símbolos e retorna uma lista de CoinValueInfo.
@@ -106,21 +121,33 @@ async getDashboardCoins(userId: string): Promise<CoinValueInfo[]> {
     where: { symbol: In(dashboard.symbols) },
   });
 
-  // 5. Mapeia cada moeda para um CoinValueInfo
-  //    A resposta da API externa terá a chave RAW com cada símbolo disponível.
-  const coinValueInfos: CoinValueInfo[] = coins.map((coin) => {
+  return this.mapToCoinValueInfos(coins, cryptoInfo);
+}
+private async mapToCoinValueInfos(coins: Coin[], cryptoInfo: CoinValueInfoResponseDto): Promise<CoinValueInfo[]> {
+  if (!cryptoInfo.RAW) {
+    throw new Error("Informações RAW não disponíveis na resposta da API externa.");
+  }
+
+  const coinValuePromises: Promise<CoinValueInfo | null>[] = coins.map(async (coin) => {
     if (!cryptoInfo.RAW)
       return null;
     const rawData = cryptoInfo.RAW[coin.symbol]?.USD;
     if (!rawData) {
-      return null; 
+      return null; // Retorna null se não houver dados RAW para a moeda
     }
-    const price = rawData.PRICE;
-    const openDay = rawData.OPENDAY;
-    const percentualChange = openDay === 0 ? 0 : ((price - openDay) / openDay) * 100;
-    return CoinValueInfo.CoinValueBuilder(coin, price, percentualChange);
-  }).filter(info => info !== null);
 
-  return coinValueInfos;
+    // Chama o método assíncrono para atualizar ou buscar a CoinValue
+    const coinValue = await this.upsertCoinValue(coin.symbol, rawData.PRICE, rawData.OPENDAY);
+
+    // Constrói o objeto CoinValueInfo e retorna
+    return CoinValueInfo.CoinValueBuilder(coin, coinValue);
+  });
+
+  // Aguarda todas as Promises serem resolvidas
+  const resolvedCoinValues = await Promise.all(coinValuePromises);
+
+  // Filtra os resultados para remover valores nulos
+  return resolvedCoinValues.filter((info): info is CoinValueInfo => info !== null);
 }
+
 }

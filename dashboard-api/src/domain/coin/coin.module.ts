@@ -6,16 +6,20 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Coin } from './entities/coin.entity';
 import { CoinListScheduler } from './coin-list.scheduler';
 import { CoinListService } from './services/coin-list.service';
-import { CoinController } from './coin.controller';
 import { CoinService } from './services/coin.service';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Dashboard, DashboardSchema } from './schemas/dashboard.schema';
-import { ConfigService } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { CoinApiService } from 'src/infrastructure/external-data/coin.api.service';
 import { CoinValue, CoinValueSchema } from './schemas/coin-value.schema';
+import { CoinPoolService } from './services/coin-pool.service';
+import { CoinController } from './controllers/coin.controller';
+import { SharedModule } from '../shared/shared.module';
+import { CoinWebSocketGateway } from './gateways/coin-websocket.gateway';
 
 @Module({
   imports: [
+    ConfigModule,
     HttpModule,
     ScheduleModule.forRoot(),
     TypeOrmModule.forFeature([Coin]),
@@ -23,6 +27,7 @@ import { CoinValue, CoinValueSchema } from './schemas/coin-value.schema';
       { name: Dashboard.name, schema: DashboardSchema },
       { name: CoinValue.name, schema: CoinValueSchema },
     ]),
+    SharedModule
   ],
   controllers: [CoinController],
   providers: [
@@ -34,8 +39,8 @@ import { CoinValue, CoinValueSchema } from './schemas/coin-value.schema';
     CoinApiService,
     CoinService,
     CoinListService,
-    CoinListScheduler,
+    CoinListScheduler,CoinPoolService, CoinWebSocketGateway
   ],
-  exports: ['ICoinApi', CoinService],
+  exports: ['ICoinApi', CoinService, CoinPoolService],
 })
 export class CoinModule {}

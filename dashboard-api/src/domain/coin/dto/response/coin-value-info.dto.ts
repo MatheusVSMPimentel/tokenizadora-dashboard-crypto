@@ -15,13 +15,13 @@ export class CoinValueInfo{
    * @param coin Coin que contém os dados.
    * @returns Uma instância de CoinInfoDto com os dados mapeados.
    */
-  static CoinValueBuilder(coin: Coin, price: number, prctChange: number): CoinValueInfo {
+  static CoinValueBuilder(coin: Coin, coinValue :CoinValue): CoinValueInfo {
     const dto = new CoinValueInfo();
     dto.symbol = coin.symbol;
     dto.imageUrl = coin.imageUrl;
     dto.name = coin.fullName;
-    dto.price = price;
-    dto.percentualChange = prctChange;
+    dto.price = coinValue.price;
+    dto.percentualChange = coinValue.percentDifference;
     return dto;
   }
 }

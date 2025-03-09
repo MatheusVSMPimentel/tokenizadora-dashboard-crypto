@@ -10,6 +10,7 @@
             v-for="(coin, index) in selectedCoins"
             :key="index"
             :coin="coin"
+            :symbol="coin.symbol"
           />
         </div>
         <div v-if="selectedCoins.length === 0">
@@ -64,7 +65,7 @@ export default {
         // Se já existir a moeda, atualize-a; caso contrário, adicione-a
         const index = this.selectedCoins.findIndex(coin => coin.symbol === coinData.symbol);
         if (index !== -1) {
-          this.$set(this.selectedCoins, index, coinData);
+          this.selectedCoins[index] = coinData;
         } else {
           this.selectedCoins.push(coinData);
         }
