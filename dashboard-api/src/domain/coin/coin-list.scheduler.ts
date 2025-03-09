@@ -8,7 +8,7 @@ export class CoinListScheduler  {
 
   constructor(private readonly coinListService: CoinListService) {}
 
-  @Timeout(86400000)
+  @Timeout(0)
   @Interval(86400000)
   async updateCoinListInterval() {
     this.logger.log('Interval job: Atualizando a lista de moedas a cada 24 horas...');
