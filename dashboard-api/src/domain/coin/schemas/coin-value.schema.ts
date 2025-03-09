@@ -8,11 +8,9 @@ export class CoinValue extends Document {
 
   @Prop({ type: Number })
   openDay: number;  
-
-  calculatePercentDifference(price: number): number {
-    if (this.openDay === 0) return 0;
-    return ((price - this.openDay) / this.openDay) * 100;
-  }
+  @Prop({ type: Number })
+  price: number;  
+  percentDifference: number
 }
 
 export const CoinValueSchema = SchemaFactory.createForClass(CoinValue);
