@@ -1,9 +1,10 @@
 import { Controller, Get, Param, Query, UseGuards, Request } from '@nestjs/common'
-import { CoinService } from './services/coin.service';
-import { CoinInfoDto } from './dto/response/coin-info.dto';
-import { StandardResponseDto } from '../shared/dto/response/standard-response.dto';
-import { JwtAuthGuard } from '../auth/jwt-auth.guard';
-import { CoinValueInfo } from './dto/response/coin-value-info.dto';
+import { CoinService } from '../services/coin.service';
+import { JwtAuthGuard } from 'src/domain/auth/jwt-auth.guard';
+import { StandardResponseDto } from 'src/domain/shared/dto/response/standard-response.dto';
+import { CoinInfoDto } from '../dto/response/coin-info.dto';
+import { CoinValueInfo } from '../dto/response/coin-value-info.dto';
+
 
 @Controller('coins')
 export class CoinController {
