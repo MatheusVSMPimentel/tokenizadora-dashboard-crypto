@@ -38,6 +38,15 @@ export default {
       },
     };
   },
+  setup(props) {
+    onBeforeUnmount(() => {
+      if (socket) {
+        socket.disconnect();
+        socket = null;
+      }
+    });
+    return {};
+  },
   computed: {
     // Retorna o símbolo em maiúsculas, mas só se houver valor; caso contrário, retorna uma string vazia.
     symbolUpper() {
@@ -61,11 +70,19 @@ export default {
       console.error("Erro de conexão:", err);
     });
   },
-  beforeUnmount() { // ou beforeDestroy para Vue 2
+  beforeUnmount() {
     if (this.socket) {
       this.socket.disconnect();
+      this.socket = null;
     }
   },
+  beforeRouteLeave(to, from, next) {
+    if (this.socket) {
+      this.socket.disconnect();
+      this.socket = null;
+    }
+    next();
+  }
 };
 </script>
 

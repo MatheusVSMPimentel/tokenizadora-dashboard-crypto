@@ -16,6 +16,7 @@ import { CoinPoolService } from './services/coin-pool.service';
 import { CoinController } from './controllers/coin.controller';
 import { SharedModule } from '../shared/shared.module';
 import { CoinWebSocketGateway } from './gateways/coin-websocket.gateway';
+import { PollingUpdateService } from './services/polling-update.service';
 
 @Module({
   imports: [
@@ -39,7 +40,7 @@ import { CoinWebSocketGateway } from './gateways/coin-websocket.gateway';
     CoinApiService,
     CoinService,
     CoinListService,
-    CoinListScheduler,CoinPoolService, CoinWebSocketGateway
+    CoinListScheduler,CoinPoolService, CoinWebSocketGateway, PollingUpdateService
   ],
   exports: ['ICoinApi', CoinService, CoinPoolService],
 })

@@ -7,9 +7,11 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { CoinApiService } from './infrastructure/external-data/coin.api.service';
 import { MongooseModule } from '@nestjs/mongoose';
 import { AuthModule } from './domain/auth/auth.module';
+import { EventEmitterModule } from '@nestjs/event-emitter';
 
 @Module({
   imports: [
+    EventEmitterModule.forRoot(),
     ConfigModule.forRoot({isGlobal: true,}),
     ScheduleModule.forRoot(),
     TypeOrmModule.forRootAsync({
